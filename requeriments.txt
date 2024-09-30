@@ -1,4 +1,0 @@
-entorno_virtual\Scripts\activate (activar entorno entorno virtual)
-deactivate (salir del entorno virtual)
-
-django
