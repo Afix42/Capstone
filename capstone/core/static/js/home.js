@@ -1,38 +1,53 @@
-let slideIndex = 0;
+let slideIndex = 1; // Comenzar en la primera diapositiva
 let slideInterval; // Variable para almacenar el temporizador
 
-showSlides();
+// Mostrar la primera diapositiva
+showSlides(slideIndex);
 
+// Iniciar el temporizador para cambiar automáticamente de diapositiva
+startSlideShow();
+
+// Next/previous controls
 function plusSlides(n) {
-    clearTimeout(slideInterval); // Detener el temporizador actual
-    showSlides(slideIndex += n);
+  clearTimeout(slideInterval); // Detener el temporizador
+  slideIndex += n; // Actualizar el índice de la diapositiva
+  showSlides(slideIndex); // Mostrar la nueva diapositiva
+  startSlideShow(); // Reiniciar el temporizador después de la interacción manual
 }
 
+// Thumbnail image controls
 function currentSlide(n) {
-    clearTimeout(slideInterval); // Detener el temporizador actual
-    showSlides(slideIndex = n);
+  clearTimeout(slideInterval); // Detener el temporizador
+  slideIndex = n; // Actualizar el índice de la diapositiva
+  showSlides(slideIndex); // Mostrar la diapositiva seleccionada
+  startSlideShow(); // Reiniciar el temporizador después de la interacción manual
 }
 
-function showSlides() {
-    let i;
-    let slides = document.getElementsByClassName("mySlides");
+// Función para mostrar la diapositiva actual
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
 
-    // Remover todas las clases de animación y ocultar todas las diapositivas
-    for (i = 0; i < slides.length; i++) {
-        slides[i].classList.remove("push-in", "push-out", "show"); // Remover animaciones
-        slides[i].style.display = "none"; // Ocultar todas
-    }
-    
-    slideIndex++;
-    if (slideIndex > slides.length) {
-        slideIndex = 1;
-    }
+  // Si n es mayor que la cantidad de diapositivas, volver al principio
+  if (n > slides.length) { slideIndex = 1 }
 
-    // Mostrar la nueva diapositiva y aplicar la clase para que sea visible
-    slides[slideIndex - 1].style.display = "block"; // Mostrar nueva diapositiva
-    slides[slideIndex - 1].classList.add("push-in"); // Nueva diapositiva entra
-    slides[slideIndex - 1].classList.add("show"); // Hacerla visible
+  // Si n es menor que 1, ir a la última diapositiva
+  if (n < 1) { slideIndex = slides.length }
 
-    // Reiniciar el temporizador para cambiar la imagen cada 3 segundos
-    slideInterval = setTimeout(showSlides, 8000); // Cambiar imagen cada 3 segundos
+  // Ocultar todas las diapositivas
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+
+  // Quitar la clase 'active' de todos los puntos
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+
+  // Mostrar la diapositiva actual y marcar el punto correspondiente
+  slides[slideIndex - 1].style.display = "block";
+  dots[slideIndex - 1].className += " active";
 }
+
+
