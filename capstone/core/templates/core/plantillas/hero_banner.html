@@ -2,10 +2,12 @@
 
 <section class="hero-banner">
     <div class="hero-content">
-        {% for i in images %}
-        <a href="#"><img src="{% static 'IMG/placeholder.jpg' %}" alt="Banner Image {{ i }}" class="banner-img"></a>
-        {% endfor %}
+        <a href="#"><img src="{% static 'IMG/tienda.jpg' %}" alt="Banner Image {{ i }}" class="banner-img"></a>
     </div>
+    <div class="hero-content">
+        <a href="#"><img src="{% static 'IMG/foro.webp' %}" alt="Banner Image {{ i }}" class="banner-img"></a>
+    </div>
+    
 </section>
 <style>
     
@@ -45,6 +47,6 @@
 
 
 .banner-img:hover {
-    transform: scale(2.05);
+    transform: scale(1.30);
 }
 </style>
