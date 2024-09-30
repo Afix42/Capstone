@@ -1,0 +1,30 @@
+{% load static %}
+
+<!-- Container for the slideshow -->
+<div class="slideshow-container">
+  <!-- Loop through slides -->
+  {% for i in slides_range %}
+    <div class="mySlides fade">
+      <!-- Slide number -->
+      <div class="numbertext">{{ i }} / {{ slides_range|length }}</div>
+      <!-- Slide image -->
+      <img src="{% static 'IMG/placeholder.jpg' %}" style="width:100%" alt="Slide {{ i }}">
+      <!-- Caption for the slide -->
+      <div class="text">Caption {{ i }}</div>
+    </div>
+  {% endfor %}
+
+  <!-- Navigation buttons -->
+  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+  <a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+
+<!-- Dots for slide navigation -->
+<div style="text-align:center">
+  {% for i in slides_range %}
+    <span class="dot" ></span>
+  {% endfor %}
+</div>
+
+<!-- Include CSS and JavaScript for the slideshow functionality -->
+<!-- Example CSS and JS can be added here -->

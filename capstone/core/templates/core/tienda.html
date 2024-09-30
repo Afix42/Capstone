@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+  {% load static %}
+  
+  <!-- Incluir la plantilla del head -->
+  {% include 'core/plantillas/dame_head.html' %}
+  
+
+  <head>
+    <title>MusicPro - Tienda</title>
+
+    <!-- CSS Propio -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
+    
+
+  </head>
+  
+  <body>
+    {% load humanize %}
+      <!-- Incluir la barra de navegación -->
+  {% include 'core/plantillas/navbar.html' %}
+
+ 
+    <!-- Sección Banner  -->
+    {% load static %}
+    <!-- Sección Hero -->
+    <section class="hero">
+        <div class="hero-inner">
+            <h1>Componentes Recomendados</h1>
+            
+            <h2>
+                <p>Compártenos</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </h2>
+        </div>
+    </section>
+    
+    <style>
+        /* Sección Hero */
+        .hero {
+            width: 100%;
+            height: 91vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* Sombra más notoria */
+        }
+    
+        .hero h1 {
+            font-size: 5em;
+        }
+    
+        .social-links a {
+            color: white; /* Cambia el color de los iconos a blanco */
+            text-decoration: none; /* Elimina el subrayado de los enlaces (opcional) */
+            margin: 0 5px; /* Añade margen entre los iconos */
+        }
+    
+        .social-links a:hover {
+            color: #ff7d7d; /* Cambia el color al pasar el mouse (opcional) */
+        }
+    </style>
+    
+
+
+    <!-- Sección Productos - Instrumentos -->
+    <section class="product">
+      <h2 class="product-category">Instrumentos</h2>
+      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+      <div class="product-container">
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Guitarra Acústica</h8><br>
+            <span class="price">$150,000</span>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Piano Eléctrico</h8><br>
+            <span class="price">$500,000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Productos - Equipos -->
+    <section class="product">
+      <h2 class="product-category">Equipos</h2>
+      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+      <div class="product-container">
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Equipo Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Parlante Bluetooth</h8><br>
+            <span class="price">$120,000</span>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Equipo Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Auriculares Inalámbricos</h8><br>
+            <span class="price">$80,000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección Productos - Accesorios -->
+    <section class="product">
+      <h2 class="product-category">Accesorios</h2>
+      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+      <div class="product-container">
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Accesorio Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Correa para Guitarra</h8><br>
+            <span class="price">$25,000</span>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" class="product-thumb" alt="Accesorio Placeholder">
+          </div>
+          <div class="product-info">
+            <h8 class="product-brand">Soporte para Micrófono</h8><br>
+            <span class="price">$30,000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/tienda.js' %}"></script>
+    
+    <!-- Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" 
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+  </body>
+  
+  <!-- Footer -->
+  {% include 'core/plantillas/footer.html' %}
+
+</html>

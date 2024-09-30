@@ -1,0 +1,70 @@
+<!-- navbar.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Asegúrate de tener Font Awesome cargado -->
+<ul class="navbar">
+    <div class="left-nav">
+        <li><a href="{% url 'home' %}" class="active home-button"><i class="fas fa-home"></i> Hogar</a></li>
+        <li><a href=""><i class="fas fa-hammer"></i> Forja</a></li>
+        <li><a href="{% url 'tienda' %}"><i class="fas fa-box"></i> Productos</a></li>
+        <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>
+    </div>
+    <div class="right-nav">
+        <li class="nav-right"><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
+        <li class="nav-right"><a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Crear Cuenta</a></li>
+    </div>
+</ul>
+
+<!-- css -->
+<style>
+/* Estilos de la barra de navegación */
+.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    z-index: 1000; /* Ajusta este valor según sea necesario */
+    min-height: 70px; /* Altura mínima de la navbar */
+}
+
+/* Alinear los elementos de la izquierda y derecha */
+.left-nav, .right-nav {
+    float: left;
+}
+
+.right-nav {
+    float: right; /* Mueve estos elementos al extremo derecho */
+}
+
+.navbar li {
+    float: left;
+}
+
+.navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 20px 24px; /* Aumentar el padding para más espacio vertical */
+    text-decoration: none;
+    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-radius: 8px; /* Bordes redondeados */
+    transition: background-color 0.3s, color 0.3s; /* Transición suave en hover */
+}
+
+.navbar li a:hover, .active {
+    background-color: #111;
+}
+
+/* Efecto hover específico para el botón de Hogar */
+.home-button:hover {
+    background-color: #444; /* Cambia el color de fondo en hover */
+    color: rgb(255, 166, 0); /* Cambia el color del texto en hover */
+}
+</style>

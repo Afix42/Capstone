@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <!-- Incluir la plantilla del head -->
+    {% include 'core/plantillas/dame_head.html' %}
+
+    <!-- Cargar estilos y recursos estáticos -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+    <body>
+            <!-- Incluir la barra de navegación -->
+    {% include 'core/plantillas/navbar.html' %}
+
+        <!-- Contenedor principal -->
+        <div class="container">
+            <h1>PC Parts Discussion</h1>
+
+            <!-- Posts (puedes generar dinámicamente estos posts) -->
+            <div class="post">
+                <h2>PC por piezas</h2>
+                <p>651 votes • 20 comments</p>
+            </div>
+            <div class="post">
+                <h2>¿Consejos para comprar piezas de PC en España?</h2>
+                <p>3 votes • 16 comments</p>
+            </div>
+            <div class="post">
+              <h2>¿Consejos para comprar piezas de PC en España?</h2>
+              <p>3 votes • 16 comments</p>
+          </div>
+          <div class="post">
+            <h2>¿Consejos para comprar piezas de PC en España?</h2>
+            <p>3 votes • 16 comments</p>
+        </div>
+        <div class="post">
+          <h2>¿Consejos para comprar piezas de PC en España?</h2>
+          <p>3 votes • 16 comments</p>
+      </div>
+      <div class="post">
+        <h2>¿Consejos para comprar piezas de PC en España?</h2>
+        <p>3 votes • 16 comments</p>
+    </div>
+    <div class="post">
+      <h2>¿Consejos para comprar piezas de PC en España?</h2>
+      <p>3 votes • 16 comments</p>
+  </div>
+  <div class="post">
+    <h2>¿Consejos para comprar piezas de PC en España?</h2>
+    <p>3 votes • 16 comments</p>
+</div>
+<div class="post">
+  <h2>¿Consejos para comprar piezas de PC en España?</h2>
+  <p>3 votes • 16 comments</p>
+</div>
+            <div class="post">
+                <h2>¿Consejos para comprar piezas de PC en España?</h2>
+                <p>3 votes • 16 comments</p>
+            </div>
+
+            <!-- Añadir más posts aquí -->
+
+            <!-- Paginación fija en la parte inferior del contenedor -->
+            <div class="pagination">
+                <a href="#">All</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">6</a>
+                <a href="#">7</a>
+                <a href="#">8</a>
+                <a href="#">9</a>
+                <a href="#">10</a>
+            </div>
+
+        </div>
+
+        <!-- Cargar archivo JavaScript -->
+        <script src="{% static 'js/home.js' %}"></script>
+    </body>
+
+    <!-- Estilos -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url("{% static 'IMG/placeholder.jpg' %}");
+            background-size: cover;
+        }
+
+        /* Estilos del contenedor */
+        .container {
+            width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+            max-width: 1200px; 
+            height: 90vh; /* Ocupa el 90% de la altura de la pantalla */
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            overflow-y: auto; /* Habilitar scroll si hay mucho contenido */
+        }
+
+        .post {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 10px; /* Bordes redondeados */
+            transition: background-color 0.3s, transform 0.3s; /* Transición suave */
+        }
+
+        .post h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .post p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        /* Efecto hover */
+        .post:hover {
+            background-color: #f5f5f5;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Estilos de la paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            background-color: #f0f0f0;
+            border-top: 1px solid #e0e0e0;
+            position: absolute; /* Fija la paginación en la parte inferior del contenedor */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            text-decoration: none;
+            color: #333333;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #e0e0e0;
+        }
+
+        .pagination .next {
+            background-color: #cccccc;
+        }
+
+        .pagination .next:hover {
+            background-color: #bbbbbb;
+        }
+    </style>
+
+</html>
