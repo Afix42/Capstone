@@ -21,7 +21,6 @@ body, html {
     font-size: 1.5em;
     border: 3px solid white;
     border-radius: 20px;
-    background-color: #383D40;
 }
 
 * {
@@ -44,7 +43,7 @@ body, html {
 .mySlides img {
     width: 100%;
     height: 45vh; /* Altura ajustada a 30vh */
-    object-fit: contain; /* Ajusta la imagen para cubrir el espacio del contenedor */
+    object-fit: fill; /* Ajusta la imagen para cubrir el espacio del contenedor */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Agrega sombra debajo de las imágenes */
 }
 
