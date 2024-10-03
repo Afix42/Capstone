@@ -26,3 +26,9 @@ def foro(request):
 def tienda(request):
     # Aquí puedes agregar lógica para listar productos si tienes un modelo de productos
     return render(request, 'core/tienda.html')  # Página de la tienda
+
+def vista_usuario(request):
+    return render(request, 'core/home_usuario')
+
+def vista_admin(request):
+    return render(request, 'core/home_admin')
