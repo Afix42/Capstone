@@ -2,17 +2,23 @@
 <!-- Sección Hero -->
 <section class="hero">
     <div class="hero-inner">
-        <h1>PcForge</h1>
-        <h2>
-            <p>Compártenos</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-                <a href="#"><i class="fab fa-pinterest"></i></a>
-            </div>
-        </h2>
+        <!-- Contenedor para la animación Lottie -->
+        <dotlottie-player src="https://lottie.host/090756da-cee3-4e35-9f8a-2343d2777930/uaP49y7FKd.json" 
+                          background="transparent" 
+                          speed="1" 
+                          style="width: 300px; height: 300px;" 
+                          loop 
+                          autoplay>
+        </dotlottie-player>
+        <h1 class="overlay-text">PcForge</h1> <!-- Texto superpuesto -->
+        <h2>Compártenos</h2>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
     </div>
 </section>
 
@@ -26,12 +32,26 @@
         align-items: center;
         text-align: center;
         color: white;
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* Sombra más notoria */
+        background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+        box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.9), /* Sombra fuerte arriba */
+                    0 5px 10px rgba(0, 0, 0, 0.3); /* Sombra leve abajo */
+        position: relative;
     }
 
-    .hero h1 {
-        font-size: 5em;
+    .hero-inner {
+        position: relative; /* Hacer el contenedor relativo para posicionar los elementos hijos */
+    }
+
+    .overlay-text {
+        position: absolute; /* Posicionar el texto de manera absoluta */
+        top: 50%; /* Centrar verticalmente */
+        left: 50%; /* Centrar horizontalmente */
+        transform: translate(-50%, -50%); /* Ajustar la posición para centrar */
+        font-size: 5em; /* Tamaño del texto */
+        z-index: 10; /* Asegurar que el texto esté por encima de otros elementos */
+        background-color: rgba(0, 0, 0, 0.4); /* Fondo negro más translúcido */
+        padding: 10px 20px; /* Espaciado alrededor del texto */
+        border-radius: 10px; /* Bordes redondeados */
     }
 
     .social-links a {
@@ -44,3 +64,14 @@
         color: #ff7d7d; /* Cambia el color al pasar el mouse (opcional) */
     }
 </style>
+
+<script>
+    // Inicializa la animación Lottie
+    var animation = lottie.loadAnimation({
+        container: document.getElementById('lottie-container'), // Contenedor donde se mostrará la animación
+        renderer: 'svg', // Tipo de renderizado
+        loop: true, // Repetir la animación
+        autoplay: true, // Iniciar automáticamente
+        path: '{% static "path/to/flame_animation.json" %}' // Ruta de tu archivo JSON
+    });
+</script>
