@@ -44,6 +44,7 @@ class Producto(models.Model):
     # Campos generales para productos tecnológicos
     marca = models.CharField(max_length=50, verbose_name='Marca del producto', null=True, blank=True)
     modelo = models.CharField(max_length=100, verbose_name='Modelo del producto', null=True, blank=True)
+    socket = models.CharField(max_length=100, verbose_name='Sockets que contiene el componente', null=True, blank=True)
 
     # Campos específicos para productos como tarjetas gráficas
     memoria_video = models.IntegerField(verbose_name='Memoria VRAM (GB)', null=True, blank=True)
@@ -63,7 +64,5 @@ class Producto(models.Model):
     nucleos = models.IntegerField(verbose_name='Número de núcleos', null=True, blank=True)
     hilos = models.IntegerField(verbose_name='Número de hilos', null=True, blank=True)
     
-    
-
     def __str__(self):
         return self.nombre_producto
