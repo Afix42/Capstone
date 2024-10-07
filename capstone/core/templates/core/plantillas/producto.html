@@ -1,0 +1,369 @@
+{% load static %}
+{% include 'core/plantillas/dame_head.html' %}
+{% include 'core/plantillas/navbar.html' %}
+
+<body>
+    {% load humanize %}
+    
+    <div class="card-wrapper">
+        <div class="card">
+            <!-- Imagen del producto -->
+            <div class="product-imgs">
+                <div class="img-display">
+                    <div class="img-showcase">
+                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="A">
+                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="B">
+                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="C">
+                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="D">
+                    </div>
+                </div>
+                <div class="img-select">
+                    <div class="img-item">
+                        <a href="#" data-id="1">
+                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 1">
+                        </a>
+                    </div>
+                    <div class="img-item">
+                        <a href="#" data-id="2">
+                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 2">
+                        </a>
+                    </div>
+                    <div class="img-item">
+                        <a href="#" data-id="3">
+                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 3">
+                        </a>
+                    </div>
+                    <div class="img-item">
+                        <a href="#" data-id="4">
+                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 4">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detalles del producto -->
+            <div class="product-content">
+                <h2 class="product-title">{{ producto.nombreProducto }}</h2>
+                <a href="#" class="product-link">Recógelo en la tienda</a>
+
+                <div class="product-price">
+                    <p class="last-price">Antes: 10 <span>$ {{ producto.precioAnterior | intcomma }}</span></p>
+                    <p class="new-price">Ahora: 9 <span>${{ producto.precioProducto | intcomma }}</span></p>
+                </div>
+
+                <div class="product-detail">
+                    <h3>Descripción:</h3>
+                    <p>{{ producto.descripcionProducto }}</p>
+                    <ul>
+                        <li>Stock disponible: <span>{{ producto.stockProducto }}</span></li>
+                        <li>Marca: <span>{{ producto.nombreProducto }}</span></li>
+                    </ul>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="purchase-info">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Añadir al carrito <i class="fas fa-shopping-cart"></i></button>
+                    <button type="button" class="btn"><a href="{% url 'tienda' %}">Volver a la tienda</a></button>
+                </div>
+
+                <!-- Redes sociales -->
+                <div class="social-links">
+                    <p>¡Compártelo!</p>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Deslizador de imágenes
+        const imgs = document.querySelectorAll('.img-select a');
+        const imgBtns = [...imgs];
+        let imgId = 1;
+
+        imgBtns.forEach((imgItem) => {
+            imgItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                imgId = imgItem.dataset.id;
+                slideImage();
+            });
+        });
+
+        function slideImage() {
+            const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+            document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+        }
+
+        window.addEventListener('resize', slideImage);
+    </script>
+</body>
+</html>
+<style>
+body {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'IMG/wp1.jpg' %}");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh; /* Asegura que cubra la altura completa */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.card-wrapper {
+    max-width: 2300px; /* Aumentar el ancho máximo */
+    margin: 0 auto;
+    padding: 50px 40px; /* Aumentar el padding */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.card {
+    background-color: #333;
+    border-radius: 15px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    opacity: 0.95;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* Sombra moderna */
+    padding: 30px; /* Aumentar el padding */
+}
+
+img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+}
+
+.img-display {
+    overflow: hidden;
+}
+
+.img-showcase {
+    display: flex;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+.img-showcase img {
+    min-width: 100%;
+    border-radius: 10px;
+    max-height: 500px; /* Ajustar la altura máxima de las imágenes */
+}
+
+.img-select {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.img-item {
+    margin: 0.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.img-item img {
+    width: 100%;
+    border-radius: 5px;
+    opacity: 0.9;
+}
+
+.img-item:hover {
+    opacity: 0.7;
+}
+
+.product-content {
+    padding: 3rem; /* Aumentar el padding */
+}
+
+.product-title {
+    font-size: 3rem; /* Aumentar el tamaño de la fuente */
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+}
+
+.product-link {
+    color: #ff4d4d;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.product-link:hover {
+    color: #ff8585;
+}
+
+.product-rating i {
+    color: #ffc107;
+}
+
+.product-rating span {
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.product-price {
+    font-size: 2rem; /* Aumentar el tamaño de la fuente */
+    color: #fff;
+    margin: 1rem 0;
+}
+
+.new-price {
+    font-size: 2.5rem; /* Aumentar el tamaño de la fuente */
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.last-price {
+    font-size: 1.5rem; /* Aumentar el tamaño de la fuente */
+    color: #999;
+    text-decoration: line-through;
+}
+
+.product-detail {
+    margin: 20px 0;
+    color: #e0e0e0;
+}
+
+.product-detail h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.product-detail p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.product-detail ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.product-detail ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    padding-left: 1.7rem;
+}
+
+.product-detail ul li i {
+    color: #ff4d4d;
+    margin-right: 10px;
+}
+
+.purchase-info {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.purchase-info .btn {
+    padding: 0.8rem 1.2rem;
+    border-radius: 5px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    background-color: #0D0D0D;
+    transition: background 0.3s;
+}
+
+.purchase-info .btn:hover {
+    background-color: #ff4d4d;
+}
+
+.purchase-info .btn a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.social-links {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 20px;
+}
+
+.social-links a {
+    color: #fff;
+    background: #454545;
+    width: 50px; /* Aumentar el tamaño de los botones de redes sociales */
+    height: 50px; /* Aumentar el tamaño de los botones de redes sociales */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.social-links a:hover {
+    background-color: #ff4d4d;
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .product-content {
+        padding: 15px;
+    }
+
+    .product-title {
+        font-size: 2rem;
+    }
+
+    .new-price {
+        font-size: 1.5rem;
+    }
+
+    .last-price {
+        font-size: 1rem;
+    }
+
+    .product-rating {
+        justify-content: center;
+    }
+
+    .purchase-info {
+        justify-content: center;
+    }
+}
+
+/* Placeholder for product description */
+.product-detail p::after {
+    content: "Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi ";
+    display: block;
+    font-style: italic;
+    color: #ccc;
+}
+
+  </style>
