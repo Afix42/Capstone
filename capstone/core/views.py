@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login as django_login
 from .models import Usuario, Rol
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import logout
 
 # Create your views here.
 
@@ -65,25 +66,47 @@ def registro_view(request):
     return render(request, 'core/form_registro.html')
 
 
+from django.contrib.auth import authenticate, login as django_login
+from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 def funcion_login(request):
     if request.method == 'POST':
-        username = request.POST['username']  # Cambiar 'nombre' a 'username'
+        email = request.POST['email']  # Cambiar a 'email'
         password = request.POST['password']
         
-        user = authenticate(request, username=username, password=password)
-
+        # Autenticar usando el email en lugar del username
+        try:
+            # Obtener el usuario basado en el email usando el modelo personalizado
+            user = Usuario.objects.get(email=email)
+            username = user.username  # Obtener el nombre de usuario asociado
+            
+            # Autenticar usando el nombre de usuario y la contraseña
+            user = authenticate(request, username=username, password=password)
+        except Usuario.DoesNotExist:
+            user = None
+        
         if user is not None:
             django_login(request, user)  # Esto debe estar correcto
+            
             # Verifica si el usuario tiene rol de administrador
             if hasattr(user, 'rol') and user.rol.nombreRol == 'Administrador':
-                return redirect('admin')  # Redirige a la vista de administrador
+                print("Administrador inicio sesion")
+                return redirect('home')  # Redirige a la vista de administrador
             else:
-                return redirect('usuario')  # Redirige a la vista de usuario
+                print("Usuario inicio sesion")
+                return redirect('home')  # Redirige a la vista de usuario
         else:
             messages.error(request, 'El usuario y/o contraseña no coinciden o no existen.')
             return render(request, 'core/form_login.html')
 
     return render(request, 'core/form_login.html')
 
+
 def producto(request):
     return render(request, 'core/plantillas/producto.html')  # Página de la tienda
+
+def funcion_logout(request):
+    logout(request)  # Esta función cierra la sesión del usuario
+    return redirect('home')  # Redirige a la página de inicio o cualquier otra página

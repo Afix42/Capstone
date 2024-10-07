@@ -72,7 +72,7 @@
 <script src="{% static 'js/vali_login.js' %}"></script>
 </body>
 <div class="form-container">
-    <form class="register-form" action="{% url 'register' %}" method="POST" onsubmit="return validateLoginForm()">
+    <form class="register-form" action="{% url 'login' %}" method="POST" onsubmit="return validateLoginForm()">
         {% csrf_token %}
         <h2>Inicio de sesión</h2>
         <div class="form-group">
@@ -83,7 +83,7 @@
             <label for="password">Contraseña</label>
             <input type="password" id="password" name="password" placeholder="Introduce tu contraseña" required>
         </div>
-        <button type="button" class="submit-button login-button">Iniciar sesión</button>
+        <button type="submit" class="submit-button login-button">Iniciar sesión</button>
         <p id="error-message" style="color:red;"></p>
     </form>
 </div>
