@@ -80,72 +80,25 @@
       <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
       <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
       <div class="product-container">
+        {% for p in productos %}
         <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/AMD Radeon Pro WX 2100.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">AMD Radeon Pro WX 2100 [100-506001]</h8><br>
-            <span class="price">$150,000</span>
-          </div>
+            {% if p.imagen_uno %}
+            <div class="product-image">
+                <span class="discount-tag"></span>
+                <img src="{{ p.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
+            </div>
+            <a type='button' class='card-btn' href="producto/{{ p.id }}" style="text-align: center;">Ir al producto.</a>
+            {% endif %}
+            <div class="product-info">  
+                <h8 class="product-brand">{{ p.nombre_producto }}</h8><br>
+                <span class="price">${{ p.precio_producto | intcomma }}</span><span class="actual-price"></span>
+            </div>
         </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/XFX RX 570.png' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">XFX RX 570 [RX-570P427D6]</h8><br>
-            <span class="price">$500,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/gigabyte radeon rx6400 d6.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Gigabyte Radeon RX 6400 D6 LOW PROFILE 4G [GV-R64D6-4GL]</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/msi radeon rx6500.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">MSI Radeon RX 6500 XT MECH 2X 4G OC</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/xfx rx580.png' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">XFX RX 580 [RX-580P8DFD6]</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/rx6400 challenger itx.png' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">ASRock Radeon RX 6400 Challenger ITX 4GB [RX6400 CLI 4G]</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/amd radeon rx6400.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">ASRock PULSE AMD Radeon RX 6400 [11315-01-20G]</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-      </div>
-      
-    </section>
+        {% endfor %}
+    </div>
+    
+  </section>
+  
 
     <!-- Sección Productos - Equipos -->
     <section class="product">

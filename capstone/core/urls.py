@@ -1,6 +1,8 @@
 # urls.py
 from django.urls import path
 from . import views 
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -14,4 +16,4 @@ urlpatterns = [
     path('inicio_sesion/', views.funcion_login, name='login'),  # Esta es la función que maneja el login
     path('producto/', views.producto, name='producto'),    
     path('cerrar_sesion/', views.funcion_logout, name='cerrar_sesion'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

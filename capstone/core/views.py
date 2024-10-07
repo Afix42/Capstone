@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
-from .models import Usuario, Rol
+from .models import Usuario, Rol, Producto, TipoProducto
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -29,8 +29,9 @@ def foro(request):
     return render(request, 'core/foro.html')  # Página del foro
 
 def tienda(request):
-    # Aquí puedes agregar lógica para listar productos si tienes un modelo de productos
-    return render(request, 'core/tienda.html')  # Página de la tienda
+    tipo_graficas = TipoProducto.objects.get(nombre_tipo='Graficas')  # Asegúrate de que 'Graficas' existe
+    productos_graficas = Producto.objects.filter(tipo_producto=tipo_graficas)  # Filtrar productos
+    return render(request, 'core/tienda.html', {'productos': productos_graficas})  # Pasar los productos a la plantilla
 
 def vista_usuario(request):
     return render(request, 'core/home_usuario.html')
