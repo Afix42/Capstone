@@ -84,3 +84,6 @@ def funcion_login(request):
             return render(request, 'core/form_login.html')
 
     return render(request, 'core/form_login.html')
+
+def producto(request):
+    return render(request, 'core/plantillas/producto.html')  # Página de la tienda

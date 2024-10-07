@@ -12,4 +12,5 @@ urlpatterns = [
     path('admin/', views.vista_admin, name='admin'),
     path('registro/', views.registro_view, name='registro'),
     path('inicio_sesion/', views.funcion_login, name='login'),  # Esta es la función que maneja el login
+    path('producto/', views.producto, name='producto'),    
 ]
