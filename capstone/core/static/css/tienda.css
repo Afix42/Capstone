@@ -126,7 +126,7 @@ img {
     z-index: 8;
 }
 
-.pre-btn {left: 0; transform: rotate(180deg);}
+.pre-btn {left: 0;}
 .nxt-btn {right: 0;}
 
 .pre-btn img,
@@ -170,3 +170,9 @@ img {
 }
 
 
+.no-products-message {
+    text-align: center;
+    color: #b82020; /* Color del texto */
+    font-size: 3.6em; /* Tamaño de fuente */
+    margin: 20px 0; /* Margen superior e inferior */
+}

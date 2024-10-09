@@ -31,8 +31,12 @@ def foro(request):
 
 def tienda(request):
     tipo_graficas = TipoProducto.objects.get(nombre_tipo='Graficas')  # Asegúrate de que 'Graficas' existe
+    tipo_procesador = TipoProducto.objects.get(nombre_tipo='Procesador')
+    tipo_placamadre = TipoProducto.objects.get(nombre_tipo='Placa Madre')
     productos_graficas = Producto.objects.filter(tipo_producto=tipo_graficas)  # Filtrar productos
-    return render(request, 'core/tienda.html', {'productos': productos_graficas})  # Pasar los productos a la plantilla
+    productos_procesador = Producto.objects.filter(tipo_producto=tipo_procesador)
+    productos_placamadre = Producto.objects.filter(tipo_producto=tipo_placamadre)
+    return render(request, 'core/tienda.html', {'productos': productos_graficas, 'procesadores': productos_procesador, 'placamadre': productos_placamadre})  # Pasar los productos a la plantilla
 
 def vista_usuario(request):
     return render(request, 'core/home_usuario.html')

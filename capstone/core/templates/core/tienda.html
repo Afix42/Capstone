@@ -1,243 +1,202 @@
 <!DOCTYPE html>
 <html lang="es">
-  {% load static %}
-  
-  <!-- Incluir la plantilla del head -->
-  {% include 'core/plantillas/dame_head.html' %}
-  
+{% load static %}
 
-  <head>
-    <title>MusicPro - Tienda</title>
+<!-- Incluir la plantilla del head -->
+{% include 'core/plantillas/dame_head.html' %}
 
-    <!-- CSS Propio -->
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-    <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
-    
+<head>
+  <title>MusicPro - Tienda</title>
 
-  </head>
-  
-  <body>
-    {% load humanize %}
-      <!-- Incluir la barra de navegación -->
+  <!-- CSS Propio -->
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/tienda.css' %}">
+
+
+</head>
+
+<body>
+  {% load humanize %}
+  <!-- Incluir la barra de navegación -->
   {% include 'core/plantillas/navbar.html' %}
 
- 
-    <!-- Sección Banner  -->
-    {% load static %}
-    <!-- Sección Hero -->
-    <section class="hero">
-        <div class="hero-inner">
-            <h1>Componentes Recomendados</h1>
-            
-            <h2>
-                <p>Compártenos</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#"><i class="fab fa-pinterest"></i></a>
-                </div>
-            </h2>
-        </div>
-    </section>
-    
-    <style>
-        /* Sección Hero */
-        .hero {
-            width: 100%;
-            height: 91vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); /* Sombra más notoria */
-        }
-    
-        .hero h1 {
-            font-size: 5em;
-        }
-    
-        .social-links a {
-            color: white; /* Cambia el color de los iconos a blanco */
-            text-decoration: none; /* Elimina el subrayado de los enlaces (opcional) */
-            margin: 0 5px; /* Añade margen entre los iconos */
-        }
-    
-        .social-links a:hover {
-            color: #ff7d7d; /* Cambia el color al pasar el mouse (opcional) */
-        }
-    </style>
-    
 
+  <!-- Sección Banner  -->
+  {% load static %}
+  <!-- Sección Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Componentes Recomendados</h1>
 
-    <!-- Sección Productos - Instrumentos -->
-    <section class="product">
-      <h2 class="product-category">Tarjetas de video</h2>
-      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
-      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
-      <div class="product-container">
-        {% for p in productos %}
-        <div class="product-card">
-            {% if p.imagen_uno %}
-            <div class="product-image">
-                <span class="discount-tag"></span>
-                <img src="{{ p.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
-            </div>
-            <a type='button' class='card-btn' href="producto/{{ p.id }}" style="text-align: center;">Ir al producto.</a>
-            {% endif %}
-            <div class="product-info">  
-                <h8 class="product-brand">{{ p.nombre_producto }}</h8><br>
-                <span class="price">${{ p.precio_producto | intcomma }}</span><span class="actual-price"></span>
-            </div>
+      <h2>
+        <p>Compártenos</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-whatsapp"></i></a>
+          <a href="#"><i class="fab fa-pinterest"></i></a>
         </div>
-        {% endfor %}
+      </h2>
     </div>
-    
   </section>
-  
 
-    <!-- Sección Productos - Equipos -->
-    <section class="product">
-      <h2 class="product-category">Procesadores</h2>
-      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
-      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
-      <div class="product-container">
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/procesadori512th.jpeg' %}" class="product-thumb" alt="Equipo Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador Intel Core i5-12400, 2.5GHz Turbo 4.4GHz, Socket LGA 1700, 6-Core</h8><br>
-            <span class="price">$120,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/procesadori310th.jpg' %}" class="product-thumb" alt="Equipo Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador Intel Core i3-10100 4-Core 3.6 GHz (6M Cache, up to 4.30 GHz)</h8><br>
-            <span class="price">$119,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/amdryzen75000.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador AMD Ryzen 7 9700X, 3.8GHz(5.5GHz Turbo), 8Core/16Hilos</h8><br>
-            <span class="price">$434,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/ryzen99000.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador AMD Ryzen 9 9900X, 4.4GHz(5.6GHz Turbo), 12Core/24Hilos</h8><br>
-            <span class="price">$150,000</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/inteli512th.jpeg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador Intel Core i5-12600KF</h8><br>
-            <span class="price">$294,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/inteli712th.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Procesador Intel Core i7-12700F Alder Lake, LGA1700, 12 Cores, 20 Hilos</h8><br>
-            <span class="price">$369,560</span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <style>
+    /* Sección Hero */
+    .hero {
+      width: 100%;
+      height: 91vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      /* Sombra más notoria */
+    }
 
-    <!-- Sección Productos - Accesorios -->
-    <section class="product">
-      <h2 class="product-category">Placas madre</h2>
-      <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
-      <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
-      <div class="product-container">
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/placagigabytez790.png' %}" class="product-thumb" alt="Accesorio Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre Gigabyte Z790 D DDR4</h8><br>
-            <span class="price">$244,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/aorusz790elite.jpg' %}" class="product-thumb" alt="Accesorio Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre Gigabyte Z790 Aorus ELITE AX, Intel LGA1700, DDR5 4x</h8><br>
-            <span class="price">$314,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/rogmaximusz790.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre ASUS ROG Maximus Z790</h8><br>
-            <span class="price">$660,880</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/gigabiyteh610mh.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre Gigabyte H610M H, Intel LGA1700, DDR5</h8><br>
-            <span class="price">$93,990</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/msitomahawk.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre MSI MAG B550 Tomahawk</h8><br>
-            <span class="price">$191,220</span>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-image">
-            <img src="{% static 'IMG/primeseriesasus.jpg' %}" class="product-thumb" alt="Instrumento Placeholder">
-          </div>
-          <div class="product-info">
-            <h8 class="product-brand">Placa Madre ASUS Prime X670-P Wifi, AMD Socket AM5, DDR5</h8><br>
-            <span class="price">$264,990</span>
-          </div>
-        </div>
-      </div>
-    </section>
+    .hero h1 {
+      font-size: 5em;
+    }
 
-    <!-- JavaScript -->
-    <script src="{% static 'js/tienda.js' %}"></script>
-    
-    <!-- Bootstrap -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" 
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
-  </body>
-  
-  <!-- Footer -->
-  {% include 'core/plantillas/footer.html' %}
+    .social-links a {
+      color: white;
+      /* Cambia el color de los iconos a blanco */
+      text-decoration: none;
+      /* Elimina el subrayado de los enlaces (opcional) */
+      margin: 0 5px;
+      /* Añade margen entre los iconos */
+    }
+
+    .social-links a:hover {
+      color: #ff7d7d;
+      /* Cambia el color al pasar el mouse (opcional) */
+    }
+  </style>
+
+
+
+<!-- Sección Productos - Tarjetas de video -->
+<section class="product">
+  <h2 class="product-category">Tarjetas de video</h2>
+  <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+  <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+  <div class="product-container">
+      {% if productos %}
+          {% for p in productos %}
+          <div class="product-card">
+              {% if p.imagen_uno %}
+              <div class="product-image">
+                  <span class="discount-tag"></span>
+                  <img src="{{ p.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
+                  <div class="button-container"> <!-- Contenedor para los botones -->
+                      <a type='button' class='card-btn' href="producto/{{ p.id }}" style="text-align: center;">Ir al producto</a>
+                      {% if user.is_authenticated and user.rol.nombreRol == 'Administrador' %}
+                      <a type='button' class='card-btn' href="producto/{{ p.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                      {% endif %}
+                  </div>
+              </div>
+              {% endif %}
+              <div class="product-info">
+                  <h8 class="product-brand">{{ p.nombre_producto }}</h8><br>
+                  <span class="price">${{ p.precio_producto | intcomma }}</span><span class="actual-price"></span>
+              </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div class="no-products-message">
+              <p>No hay productos disponibles :(</p>
+          </div>
+      {% endif %}
+  </div>
+</section>
+
+<!-- Sección Productos - Procesadores -->
+<section class="product">
+  <h2 class="product-category">Procesadores</h2>
+  <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+  <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+  <div class="product-container">
+      {% if procesadores %}
+          {% for ps in procesadores %}
+          <div class="product-card">
+              {% if ps.imagen_uno %}
+              <div class="product-image">
+                  <span class="discount-tag"></span>
+                  <img src="{{ ps.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
+                  <div class="button-container"> <!-- Contenedor para los botones -->
+                      <a type='button' class='card-btn' href="producto/{{ ps.id }}" style="text-align: center;">Ir al producto</a>
+                      {% if user.is_authenticated and user.rol.nombreRol == 'Administrador' %}
+                      <a type='button' class='card-btn' href="producto/{{ ps.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                      {% endif %}
+                  </div>
+              </div>
+              {% endif %}
+              <div class="product-info">
+                  <h8 class="product-brand">{{ ps.nombre_producto }}</h8><br>
+                  <span class="price">${{ ps.precio_producto | intcomma }}</span><span class="actual-price"></span>
+              </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div class="no-products-message">
+              <p>No hay productos disponibles :(</p>
+          </div>
+      {% endif %}
+  </div>
+</section>
+
+<!-- Sección Productos - Placas madre -->
+<section class="product">
+  <h2 class="product-category">Placas madre</h2>
+  <button class="pre-btn"><i class="fa-solid fa-arrow-left fa-2xl"></i></button>
+  <button class="nxt-btn"><i class="fa-solid fa-arrow-right fa-2xl"></i></button>
+  <div class="product-container">
+      {% if placamadre %}
+          {% for pm in placamadre %}
+          <div class="product-card">
+              {% if pm.imagen_uno %}
+              <div class="product-image">
+                  <span class="discount-tag"></span>
+                  <img src="{{ pm.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
+                  <div class="button-container"> <!-- Contenedor para los botones -->
+                      <a type='button' class='card-btn' href="producto/{{ pm.id }}" style="text-align: center;">Ir al producto</a>
+                      {% if user.is_authenticated and user.rol.nombreRol == 'Administrador' %}
+                      <a type='button' class='card-btn' href="producto/{{ pm.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                      {% endif %}
+                  </div>
+              </div>
+              {% endif %}
+              <div class="product-info">
+                  <h8 class="product-brand">{{ pm.nombre_producto }}</h8><br>
+                  <span class="price">${{ pm.precio_producto | intcomma }}</span><span class="actual-price"></span>
+              </div>
+          </div>
+          {% endfor %}
+      {% else %}
+          <div class="no-products-message">
+              <p>No hay productos disponibles :(</p>
+          </div>
+      {% endif %}
+  </div>
+</section>
+  <!-- JavaScript -->
+  <script src="{% static 'js/tienda.js' %}"></script>
+
+  <!-- Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</body>
+
+<!-- Footer -->
+{% include 'core/plantillas/footer.html' %}
 
 </html>
