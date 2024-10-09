@@ -5,6 +5,7 @@ from .models import Usuario, Rol, Producto, TipoProducto
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -40,6 +41,11 @@ def vista_admin(request):
     return render(request, 'core/home_admin.html')
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import IntegrityError
+from .models import Usuario, Rol
+
 def registro_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -59,12 +65,20 @@ def registro_view(request):
                 
                 # Mensaje de éxito
                 messages.success(request, 'Usuario registrado exitosamente.')
+                return redirect('login')  # Redirige a la página de inicio de sesión o donde prefieras
+            except IntegrityError as e:
+                # Si ocurre una violación de UNIQUE en el campo email
+                if 'UNIQUE constraint' in str(e):
+                    messages.error(request, 'El correo electrónico ya está registrado.')
+                else:
+                    messages.error(request, f'Error al registrar el usuario: {str(e)}')
             except Exception as e:
-                messages.error(request, f'Error al registrar el usuario: {str(e)}')
+                messages.error(request, f'Error inesperado: {str(e)}')
         else:
             messages.error(request, 'Las contraseñas no coinciden')
 
     return render(request, 'core/form_registro.html')
+
 
 
 from django.contrib.auth import authenticate, login as django_login
@@ -111,3 +125,4 @@ def producto(request):
 def funcion_logout(request):
     logout(request)  # Esta función cierra la sesión del usuario
     return redirect('home')  # Redirige a la página de inicio o cualquier otra página
+

@@ -14,6 +14,7 @@ class Rol(models.Model):
     
 class Usuario(AbstractUser):
     # Los grupos y permisos ya están gestionados por Django en el modelo de usuario
+    email = models.EmailField(unique=True)
     groups = models.ManyToManyField(Group, related_name='grupos_usuarios')
     user_permissions = models.ManyToManyField(Permission, related_name='usuarios_permisos')
     
