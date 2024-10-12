@@ -14,7 +14,9 @@ urlpatterns = [
     path('admin/', views.vista_admin, name='admin'),
     path('registro/', views.registro_view, name='registro'),
     path('inicio_sesion/', views.funcion_login, name='login'),  # Esta es la función que maneja el login
-    path('producto/', views.producto, name='producto'),    
+
+    path('producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),   
+
     path('cerrar_sesion/', views.funcion_logout, name='cerrar_sesion'),
     path('registrar/',views.registro_view, name='registrarse'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

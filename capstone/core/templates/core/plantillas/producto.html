@@ -8,55 +8,41 @@
     <div class="card-wrapper">
         <div class="card">
             <!-- Imagen del producto -->
+            <!-- Tiene una condicion de que si no hay imagen coloque una predenerminada -->
             <div class="product-imgs">
                 <div class="img-display">
                     <div class="img-showcase">
-                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="A">
-                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="B">
-                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="C">
-                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="D">
+                        {% for imagen in imagenes %}
+                        <img src="{{ imagen }}" alt="Imagen del producto">
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="img-select">
+                    {% for imagen in imagenes %}
                     <div class="img-item">
-                        <a href="#" data-id="1">
-                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 1">
+                        <a href="#" data-id="{{ forloop.counter }}">
+                            <img src="{{ imagen }}" alt="Producto {{ forloop.counter }}">
                         </a>
                     </div>
-                    <div class="img-item">
-                        <a href="#" data-id="2">
-                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 2">
-                        </a>
-                    </div>
-                    <div class="img-item">
-                        <a href="#" data-id="3">
-                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 3">
-                        </a>
-                    </div>
-                    <div class="img-item">
-                        <a href="#" data-id="4">
-                            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Producto 4">
-                        </a>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
-
             <!-- Detalles del producto -->
             <div class="product-content">
-                <h2 class="product-title">{{ producto.nombreProducto }}</h2>
+                <h2 class="product-title">{{ producto.nombre_producto }}</h2>
                 <a href="#" class="product-link">Recógelo en la tienda</a>
 
                 <div class="product-price">
-                    <p class="last-price">Antes: 10 <span>$ {{ producto.precioAnterior | intcomma }}</span></p>
-                    <p class="new-price">Ahora: 9 <span>${{ producto.precioProducto | intcomma }}</span></p>
+                    <p class="last-price">Antes: <span>$ {{ precio_producto}}</span></p>
+                    <p class="new-price">Ahora:<span>${{ producto.precio_producto | intcomma }}</span></p>
                 </div>
 
                 <div class="product-detail">
                     <h3>Descripción:</h3>
-                    <p>{{ producto.descripcionProducto }}</p>
+                    <p>{{ producto.descripcion_producto }}</p>
                     <ul>
-                        <li>Stock disponible: <span>{{ producto.stockProducto }}</span></li>
-                        <li>Marca: <span>{{ producto.nombreProducto }}</span></li>
+                        <li>Stock disponible: <span>{{ producto.stock_producto }}</span></li>
+                        <li>Marca: <span>{{ producto.nombre_producto }}</span></li>
                     </ul>
                 </div>
 
@@ -358,12 +344,6 @@ img {
     }
 }
 
-/* Placeholder for product description */
-.product-detail p::after {
-    content: "Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi Skibidi ";
-    display: block;
-    font-style: italic;
-    color: #ccc;
-}
+
 
   </style>

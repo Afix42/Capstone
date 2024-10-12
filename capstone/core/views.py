@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
 from .models import Usuario, Rol, Producto, TipoProducto
@@ -122,11 +122,20 @@ def funcion_login(request):
 
     return render(request, 'core/form_login.html')
 
-
-def producto(request):
-    return render(request, 'core/plantillas/producto.html')  # Página de la tienda
-
 def funcion_logout(request):
     logout(request)  # Esta función cierra la sesión del usuario
     return redirect('home')  # Redirige a la página de inicio o cualquier otra página
 
+
+def detalle_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+
+    # Preparar las imágenes del producto
+    imagenes = [
+        producto.imagen_uno.url if producto.imagen_uno else '/static/img/placeholder.jpg',
+        producto.imagen_dos.url if producto.imagen_dos else '/static/img/placeholder.jpg',
+        producto.imagen_tres.url if producto.imagen_tres else '/static/img/placeholder.jpg',
+        producto.imagen_cuatro.url if producto.imagen_cuatro else '/static/img/placeholder.jpg',
+    ]
+
+    return render(request, 'core/plantillas/producto.html', {'producto': producto, 'imagenes': imagenes})
