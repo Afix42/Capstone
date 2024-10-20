@@ -139,3 +139,105 @@ def detalle_producto(request, producto_id):
     ]
 
     return render(request, 'core/plantillas/producto.html', {'producto': producto, 'imagenes': imagenes})
+
+
+def compara(request):
+    # Obtener todos los tipos de productos
+    tipos = TipoProducto.objects.all()  
+    productos = Producto.objects.all()  
+
+    # Obtener IDs de los tipos seleccionados desde el formulario
+    tipo_producto1_id = request.GET.get('tipo_producto1')
+    tipo_producto2_id = request.GET.get('tipo_producto2')
+
+    # Filtrar productos basados en los tipos seleccionados
+    productos1 = Producto.objects.filter(tipo_producto_id=tipo_producto1_id) if tipo_producto1_id else []
+    productos2 = Producto.objects.filter(tipo_producto_id=tipo_producto2_id) if tipo_producto2_id else []
+
+    # Mostrar información sobre los productos filtrados
+    return render(request, 'core/compara.html', {
+        'tipos': tipos,
+        'productos': productos,
+        'productos1': productos1,
+        'productos2': productos2,
+    })
+
+
+
+
+
+def comprobar_compatibilidad(request):
+    if request.method == 'GET':
+        id_producto1 = request.GET.get('producto1')
+        id_producto2 = request.GET.get('producto2')
+
+        if id_producto1 and id_producto2:
+            producto1 = get_object_or_404(Producto, id=id_producto1)
+            producto2 = get_object_or_404(Producto, id=id_producto2)
+
+            mensaje = ""
+            es_compatible = False
+
+            def comprobar_socket(prod1, prod2):
+                """Verifica si dos productos son compatibles según el socket."""
+                if prod1.socket and prod2.socket:
+                    sockets_prod1 = [socket.strip() for socket in prod1.socket.split(',')]
+                    sockets_prod2 = [socket.strip() for socket in prod2.socket.split(',')]
+                    return any(socket in sockets_prod2 for socket in sockets_prod1)
+                return False
+
+            def comparar_productos(prod1, prod2):
+                """Función para comparar los productos en cualquier orden."""
+                # Comparación entre procesador y placa madre (por el socket)
+                if prod1.tipo_producto.nombre_tipo == 'Procesador' and prod2.tipo_producto.nombre_tipo == 'Placa Madre':
+                    es_compatible = comprobar_socket(prod1, prod2)
+                    return es_compatible, "¡El procesador y la placa madre son compatibles!" if es_compatible else "El procesador y la placa madre no son compatibles."
+                
+                # Comparación entre tarjeta gráfica y placa madre (por el socket)
+                elif prod1.tipo_producto.nombre_tipo == 'Tarjeta Gráfica' and prod2.tipo_producto.nombre_tipo == 'Placa Madre':
+                    es_compatible = comprobar_socket(prod1, prod2)
+                    return es_compatible, "¡La tarjeta gráfica y la placa madre son compatibles!" if es_compatible else "La tarjeta gráfica y la placa madre no son compatibles."
+
+                # Comparación entre RAM y placa madre (por la frecuencia)
+                elif prod1.tipo_producto.nombre_tipo == 'RAM' and prod2.tipo_producto.nombre_tipo == 'Placa Madre':
+                    return prod1.frecuencia_ram <= prod2.frecuencia_ram, "¡La RAM y la placa madre son compatibles!" if prod1.frecuencia_ram <= prod2.frecuencia_ram else "La RAM y la placa madre no son compatibles."
+                
+                # Comparación entre tarjeta gráfica y procesador (y viceversa)
+                elif (prod1.tipo_producto.nombre_tipo == 'Tarjeta Gráfica' and prod2.tipo_producto.nombre_tipo == 'Procesador') or \
+                    (prod1.tipo_producto.nombre_tipo == 'Procesador' and prod2.tipo_producto.nombre_tipo == 'Tarjeta Gráfica'):
+                    es_compatible = True  # En general, no hay restricción entre estos dos componentes
+                    mensaje = "¡La tarjeta gráfica y el procesador son compatibles!"
+
+                    # Verificar si hay cuello de botella
+                    frecuencia_boost_procesador = prod1.frecuencia_boost or prod1.frecuencia_base if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.frecuencia_boost or prod2.frecuencia_base
+                    nucleos_procesador = prod1.nucleos if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.nucleos
+                    hilos_procesador = prod1.hilos if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.hilos
+                    memoria_video = prod1.memoria_video if prod1.tipo_producto.nombre_tipo == 'Tarjeta Gráfica' else prod2.memoria_video
+
+                    if memoria_video > (nucleos_procesador * 2) and hilos_procesador < 8:
+                        mensaje += " Sin embargo, el procesador podría generar un cuello de botella para la tarjeta gráfica."
+                    elif frecuencia_boost_procesador > 4.5 and memoria_video < 4:
+                        mensaje += " Sin embargo, la tarjeta gráfica podría generar un cuello de botella para el procesador."
+                    else:
+                        mensaje += " No hay indicios de cuello de botella."
+                    return es_compatible, mensaje
+
+                # Si no hay reglas específicas
+                else:
+                    return False, "No hay reglas definidas para comparar estos productos."
+
+            # Comparar en ambos sentidos
+            es_compatible, mensaje = comparar_productos(producto1, producto2)
+            if not es_compatible:  # Si no son compatibles en un sentido, probar en el otro
+                es_compatible, mensaje = comparar_productos(producto2, producto1)
+
+            return render(request, 'core/plantillas/compatibilidad.html', {
+                'producto1': producto1,
+                'producto2': producto2,
+                'mensaje': mensaje,
+                'es_compatible': es_compatible
+            })
+        else:
+            return render(request, 'core/compara.html', {'error': 'Por favor, selecciona dos productos para comparar.'})
+
+    return render(request, 'core/compara.html')

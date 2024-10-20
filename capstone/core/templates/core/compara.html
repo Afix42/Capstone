@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% load static %}
+
+    {% include 'core/plantillas/navbar.html' %}
+    {% include 'core/plantillas/dame_head.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Productos</title>
+    <head>
+        <!-- Meta tags -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    </head>
+    
+</head>
+
+<body>
+    <form action="{% url 'comprobar_compatibilidad' %}" method="get" class="formulario">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Comparar Productos</h1>
+        
+        <div class="row">
+            <!-- Columna para el primer producto -->
+            <div class="col-md-5">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Selecciona el primer producto</h5>
+                        <div class="mb-3">
+                            <label for="tipo_producto1" class="form-label">Tipo de producto:</label>
+                            <select class="form-select" id="tipo_producto1" name="tipo_producto1" onchange="mostrarProductos(1)">
+                                <option value="">--Selecciona un tipo--</option>
+                                <!-- Añadir tipos de productos -->
+                                {% for tipo in tipos %}
+                                <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
+                                {% endfor %}
+                        </select>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="productos1" style="display: none;">
+                            <label for="producto1" class="form-label">Selecciona el primer producto:</label>
+                            <select class="form-select" id="producto1" name="producto1">
+                                <option value="">--Selecciona un producto--</option>
+                                <!-- Añadir productos -->
+                                {% for producto in productos %}
+                                <option value="{{ producto.id }}" 
+                                    data-imagen_uno="{{ producto.imagen_uno.url }}" 
+                                    data-precio_producto="{{ producto.precio_producto }}"
+                                    data-tipo="{{ producto.tipo_producto.id }}">{{ producto.nombre_producto }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="info_producto1" class="mt-3">
+                                <!-- Información del producto 1 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Columna para el segundo producto -->
+            <div class="col-md-5 offset-md-2">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Selecciona el segundo producto</h5>
+                        <div class="mb-3">
+                            <label for="tipo_producto2" class="form-label">Tipo de producto:</label>
+                            <select class="form-select" id="tipo_producto2" name="tipo_producto2"onchange="mostrarProductos(2)">
+                                <option value="">--Selecciona un tipo--</option>
+                                <!-- Añadir tipos de productos -->
+                                {% for tipo in tipos %}
+                                <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3" id="productos2" style="display: none;">
+                            <label for="producto2" class="form-label">Selecciona el segundo producto:</label>
+                            <select class="form-select" id="producto2" name="producto2" >
+                                <option value="">--Selecciona un producto--</option>
+                                <!-- Añadir productos -->
+                                {% for producto in productos %}
+                                <option value="{{ producto.id }}" 
+                                    data-imagen_uno="{{ producto.imagen_uno.url }}" 
+                                    data-precio_producto="{{ producto.precio_producto }}"
+                                    data-tipo="{{ producto.tipo_producto.id }}">{{ producto.nombre_producto }}</option>
+                                {% endfor %}
+                            </select>
+                            <div id="info_producto2" class="mt-3">
+                                <!-- Información del producto 2 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Botón de comprobar compatibilidad -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-warning btn-lg">Comprobar Compatibilidad</button>
+        </div>
+    </div>
+</form>
+    
+</body>
+    <!-- Carga del archivo JavaScript -->
+    <script src="{% static 'js/com.js' %}"></script>
+<!-- Footer -->
+{% include 'core/plantillas/footer.html' %}
+</html>
+
+
+
+
+</script>
+
+    <style>
+/* Ajustar el tamaño de las imágenes de los productos */
+.producto-info img {
+    width: 250px; /* Tamaño más grande */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Ajustar las tarjetas de productos para ser más grandes */
+.card {
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: none;
+}
+
+/* Margen inferior entre las tarjetas y el botón */
+.mb-4 {
+    margin-bottom: 20px !important;
+}
+
+/* Botón más pequeño y centrado */
+.btn-warning {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 30px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Ajuste para pantalla completa */
+@media (min-width: 992px) {
+    .btn-warning {
+        margin-top: 40px;
+    }
+}
+select {
+    width: 300px; /* Establece un ancho fijo */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.footer {
+    position: fixed; /* Fija el footer en la parte inferior */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #000; /* Fondo negro */
+    color: white; /* Texto blanco */
+    text-align: center; /* Centra el contenido horizontalmente */
+    padding: 10px 0; /* Espaciado vertical */
+    font-size: 14px; /* Tamaño del texto */
+    font-family: Arial, Helvetica, sans-serif; /* Fuente del texto */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+    </style>

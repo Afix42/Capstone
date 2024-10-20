@@ -17,6 +17,11 @@ urlpatterns = [
 
     path('producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),   
 
+
+    path('compara/', views.compara, name='compara'),
+    path('comprobar_compatibilidad/', views.comprobar_compatibilidad, name='comprobar_compatibilidad'),
+
+
     path('cerrar_sesion/', views.funcion_logout, name='cerrar_sesion'),
     path('registrar/',views.registro_view, name='registrarse'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

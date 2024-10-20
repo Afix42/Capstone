@@ -1,0 +1,192 @@
+<!DOCTYPE html> 
+<html lang="es">
+    {% load static %}
+
+    {% include 'core/plantillas/navbar.html' %}
+    {% include 'core/plantillas/dame_head.html' %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado de la Comparación</title>
+
+
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h1 class="text-center">Resultado de la Comparación</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="{{ producto1.imagen_uno.url }}" class="card-img-top" alt="{{ producto1.nombre_producto }}">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ producto1.nombre_producto }}</h2>
+                        <p><strong>Nombre:</strong> {{ producto1.nombre_producto }}</p>
+                        <p><strong>Marca:</strong> {{ producto1.marca }}</p>
+                        <p><strong>Tipo:</strong> {{ producto1.tipo_producto.nombre_tipo }}</p>
+                        
+                        {% if producto1.socket %}
+                            <p><strong>Socket:</strong> {{ producto1.socket }}</p>
+                        {% endif %}
+                        {% if producto1.frecuencia_ram %}
+                            <p><strong>Frecuencia RAM:</strong> {{ producto1.frecuencia_ram }} MHz</p>
+                        {% endif %}
+                        {% if producto1.memoria_video %}
+                            <p><strong>Memoria VRAM:</strong> {{ producto1.memoria_video }} GB</p>
+                        {% endif %}
+                        {% if producto1.capacidad_almacenamiento %}
+                            <p><strong>Capacidad de almacenamiento:</strong> {{ producto1.capacidad_almacenamiento }} GB</p>
+                        {% endif %}
+                        {% if producto1.frecuencia_base %}
+                            <p><strong>Frecuencia base (CPU):</strong> {{ producto1.frecuencia_base }} GHz</p>
+                        {% endif %}
+                        {% if producto1.frecuencia_boost %}
+                            <p><strong>Frecuencia boost (CPU):</strong> {{ producto1.frecuencia_boost }} GHz</p>
+                        {% endif %}
+                        {% if producto1.nucleos %}
+                            <p><strong>Núcleos:</strong> {{ producto1.nucleos }}</p>
+                        {% endif %}
+                        {% if producto1.hilos %}
+                            <p><strong>Hilos:</strong> {{ producto1.hilos }}</p>
+                        {% endif %}
+                        {% if producto1.velocidad_lectura %}
+                            <p><strong>Velocidad de lectura (Disco):</strong> {{ producto1.velocidad_lectura }} MB/s</p>
+                        {% endif %}
+                        {% if producto1.velocidad_escritura %}
+                            <p><strong>Velocidad de escritura (Disco):</strong> {{ producto1.velocidad_escritura }} MB/s</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="{{ producto2.imagen_uno.url }}" class="card-img-top" alt="{{ producto2.nombre_producto }}">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ producto2.nombre_producto }}</h2>
+                        <p><strong>Nombre:</strong> {{ producto2.nombre_producto }}</p>
+                        <p><strong>Marca:</strong> {{ producto2.marca }}</p>
+                        <p><strong>Tipo:</strong> {{ producto2.tipo_producto.nombre_tipo }}</p>
+
+                        {% if producto2.socket %}
+                            <p><strong>Socket:</strong> {{ producto2.socket }}</p>
+                        {% endif %}
+                        {% if producto2.frecuencia_ram %}
+                            <p><strong>Frecuencia RAM:</strong> {{ producto2.frecuencia_ram }} MHz</p>
+                        {% endif %}
+                        {% if producto2.memoria_video %}
+                            <p><strong>Memoria VRAM:</strong> {{ producto2.memoria_video }} GB</p>
+                        {% endif %}
+                        {% if producto2.capacidad_almacenamiento %}
+                            <p><strong>Capacidad de almacenamiento:</strong> {{ producto2.capacidad_almacenamiento }} GB</p>
+                        {% endif %}
+                        {% if producto2.frecuencia_base %}
+                            <p><strong>Frecuencia base (CPU):</strong> {{ producto2.frecuencia_base }} GHz</p>
+                        {% endif %}
+                        {% if producto2.frecuencia_boost %}
+                            <p><strong>Frecuencia boost (CPU):</strong> {{ producto2.frecuencia_boost }} GHz</p>
+                        {% endif %}
+                        {% if producto2.nucleos %}
+                            <p><strong>Núcleos:</strong> {{ producto2.nucleos }}</p>
+                        {% endif %}
+                        {% if producto2.hilos %}
+                            <p><strong>Hilos:</strong> {{ producto2.hilos }}</p>
+                        {% endif %}
+                        {% if producto2.velocidad_lectura %}
+                            <p><strong>Velocidad de lectura (Disco):</strong> {{ producto2.velocidad_lectura }} MB/s</p>
+                        {% endif %}
+                        {% if producto2.velocidad_escritura %}
+                            <p><strong>Velocidad de escritura (Disco):</strong> {{ producto2.velocidad_escritura }} MB/s</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                {% if es_compatible %}
+                    <p class="alert alert-success">{{ mensaje }}</p>
+                {% else %}
+                    <p class="alert alert-danger">{{ mensaje }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                <a href="{% url 'compara' %}" class="btn btn-primary">Volver a la Comparación</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Opcional, si usas interactividad) -->
+    
+</body>
+</html>
+
+
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-top: 20px;
+}
+
+.productos {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.producto {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0 10px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.producto h2 {
+    color: #0066cc;
+    margin-bottom: 10px;
+}
+
+.producto p {
+    color: #555;
+    margin: 5px 0;
+}
+
+.producto p strong {
+    color: #333;
+}
+
+.resultado {
+    margin: 20px 0;
+}
+
+.compatible {
+    color: green;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.no-compatible {
+    color: red;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+
+</style>
