@@ -17,7 +17,7 @@
         {% if user.is_authenticated %}
             <li class="nav-right"><a href="{% url 'cerrar_sesion' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
             <li class="nav-right">
-                <a href=""><i class="fas fa-user"></i>{{ user.username }}</a>
+                <a href="{% url 'perfil' %}"><i class="fas fa-user"></i>{{ user.username }}</a>
             </li>
         {% else %}
             <li class="nav-right"><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>

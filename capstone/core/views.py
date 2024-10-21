@@ -6,6 +6,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import IntegrityError
+from .models import Usuario, Rol
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 
@@ -44,11 +50,77 @@ def vista_usuario(request):
 def vista_admin(request):
     return render(request, 'core/home_admin.html')
 
+@login_required
+def perfil(request):
+    user = request.user
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import IntegrityError
-from .models import Usuario, Rol
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        foto_perfil = request.FILES.get('foto_perfil')  # Obtener la imagen
+
+        # Actualizar los datos del usuario
+        user.username = username
+        user.email = email
+        user.first_name = first_name
+        user.last_name = last_name
+
+        if foto_perfil:
+            print("Nueva imagen subida:", foto_perfil)
+
+        # Si se ha introducido una nueva contraseña, actualízala
+        if password:
+            user.set_password(password)
+
+        # Actualizar la imagen si el usuario sube una nueva
+        if foto_perfil:
+            user.foto_perfil = foto_perfil
+
+        # Guardar los cambios
+        user.save()
+
+        # Mensaje de éxito
+        messages.success(request, 'Perfil actualizado con éxito.')
+
+        # Redirigir a la misma página para evitar reenvío de formulario
+        return redirect('perfil')
+    
+    return render(request, 'core/plantillas/perfil.html', {'user': user})
+
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Verificar que la contraseña actual es correcta
+        if not request.user.check_password(current_password):
+            messages.error(request, 'La contraseña actual es incorrecta.')
+            return redirect('change_password')
+
+        # Verificar que las nuevas contraseñas coincidan
+        if new_password != confirm_password:
+            messages.error(request, 'Las nuevas contraseñas no coinciden.')
+            return redirect('change_password')
+
+        # Cambiar la contraseña
+        request.user.set_password(new_password)
+        request.user.save()
+
+        # Mantener la sesión después de cambiar la contraseña
+        update_session_auth_hash(request, request.user)
+
+        messages.success(request, 'Tu contraseña ha sido cambiada con éxito.')
+        return redirect('perfil')
+
+    return render(request, 'core/plantillas/cambio_contra.html')
+
 
 def registro_view(request):
     if request.method == 'POST':

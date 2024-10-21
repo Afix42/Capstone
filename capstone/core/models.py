@@ -21,6 +21,7 @@ class Usuario(AbstractUser):
     # Puedes agregar campos adicionales si necesitas
     # otros campos personalizados, como el relacionado con tu modelo de rol:
     rol = models.ForeignKey('Rol', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Rol de Usuario')
+    foto_perfil = models.ImageField(upload_to='foto_perfil/', null=True, blank=True, default='foto_perfil/default.jpg')
 
     def __str__(self):
         return self.username
