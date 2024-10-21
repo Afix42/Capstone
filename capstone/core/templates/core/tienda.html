@@ -94,7 +94,6 @@
                   <img src="{{ p.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
                   <div class="button-container"> <!-- Contenedor para los botones -->
 
-                     class="button-container"> <!-- Contenedor para los botones -->
                       <a type='button' class='card-btn' href="{% url 'detalle_producto' p.id %}" style="text-align: center;">Ir al producto</a>
                       {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
                       <a type='button' class='card-btn' href="producto/{{ p.id }}/eliminar" style="text-align: center;">Eliminar</a>
