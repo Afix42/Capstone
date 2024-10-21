@@ -1,0 +1,201 @@
+{% load static %}
+<!-- Ventana para posts destacados -->
+<div class="sidebar">
+    <h2 class="sidebar-title"><i class="fa-solid fa-flag"></i> Destacados</h2>
+    <div class="highlighted-post">
+        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
+        <div>
+            <h3>Post destacado 1</h3>
+            <p>Contenido destacado aquí...</p>
+        </div>
+    </div>
+    <div class="highlighted-post">
+        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
+        <div>
+            <h3>Post destacado 2</h3>
+            <p>Contenido destacado aquí...</p>
+        </div>
+    </div>
+    <div class="highlighted-post">
+        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
+        <div>
+            <h3>Post destacado 3</h3>
+            <p>Contenido destacado aquí...</p>
+        </div>
+    </div>
+
+    <!-- Sección de cuenta de usuario -->
+    <div class="user-account">
+        <h3><i class="fa-solid fa-user"></i> PC Forge</h3>
+        <div class="account-buttons">
+            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-file-alt"></i> Reglas de contenido</button>
+            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-lock"></i> Reglas de privacidad</button>
+            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-scroll"></i> E.U.L.A</button>
+            <button class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Crear post</button>
+        </div>
+    </div>
+
+    <!-- Banner al fondo -->
+    <div class="sidebar-banner">
+        <dotlottie-player src="https://lottie.host/090756da-cee3-4e35-9f8a-2343d2777930/uaP49y7FKd.json" 
+                          background="transparent" 
+                          speed="1" 
+                          style="width: 100%; height: 100px;" 
+                          loop 
+                          autoplay>
+        </dotlottie-player>
+        
+        <!-- Icono de yunque sobre la animación -->
+        <div class="banner-icon">
+            <i class="fa-solid fa-hammer"></i>
+        </div>
+
+        <h2>¡Síguenos!</h2>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-pinterest"></i></a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Ventana lateral para los posts destacados */
+.sidebar {
+    width: 30%; /* Aumentar el ancho para ajustarse mejor al contenedor */
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute; /* Posiciona la sidebar fuera del contenedor */
+    top: 0;
+    right: 0; /* Alinea la sidebar a la derecha */
+    height: 100%; /* Que tenga la misma altura que el contenedor principal */
+}
+
+/* Título de la sidebar */
+.sidebar-title {
+    text-align: center;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* Posts destacados */
+.highlighted-post {
+    padding: 15px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlighted-post img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+.highlighted-post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Sección de cuenta de usuario */
+.user-account {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones de cuenta */
+.account-buttons button {
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.account-buttons button:hover {
+    background-color: #dcdcdc;
+}
+
+/* Banner */
+.sidebar-banner {
+    margin-top: 3vh;
+    padding: 10px;
+    background-color: #e1e1e1;
+    border-radius: 10px;
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), 
+                url("https://images3.alphacoders.com/132/1329171.png") center/cover;
+    position: relative;
+}
+
+.sidebar-banner h2 {
+    color: #fff;
+}
+
+.banner-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: white;
+}
+
+/* Estilos para los iconos sociales */
+.social-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.social-links a:hover {
+    color: #FF7D50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Sidebar ocupa todo el ancho en móviles */
+        position: static; /* Cambiar a estático para móviles */
+        margin: 20px 0;
+    }
+
+    .highlighted-post {
+        flex-direction: column; /* Columnas en vez de filas en pantallas pequeñas */
+        align-items: flex-start;
+    }
+
+    .highlighted-post img {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .user-account h3 {
+        font-size: 1.25rem; /* Ajustar el tamaño de fuente */
+    }
+
+    .account-buttons button {
+        font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+    }
+
+    .sidebar-banner {
+        height: auto; /* Ajustar altura para que sea flexible */
+        padding: 20px 10px;
+    }
+}
+
+</style>

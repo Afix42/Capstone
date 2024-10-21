@@ -1,0 +1,300 @@
+{% load static %}
+
+<div class="post">
+    <div class="post-content">
+        <h2 class="post-title">Neque porro quisquam est qui dolor</h2>
+        <div class="post-description">
+            <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p>Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
+            <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet.</p>
+        </div>
+
+        <!-- Nuevo pie de post con botones invertidos -->
+        <div class="post-footer">
+            <!-- Botón de votos con hover especial para like/dislike -->
+            <div class="btn votes-container">
+                <div class="vote-up">
+                    <i class="fa-solid fa-up-long"></i>
+                </div>
+                <span class="vote-count">651</span>
+                <div class="vote-down">
+                    <i class="fa-solid fa-down-long"></i>
+                </div>
+            </div>
+
+            <!-- Botón de comentarios -->
+            <div class="btn comments-container">
+                <i class="fas fa-comment"></i>
+                <span class="comment-count">20</span>
+            </div>
+
+            <!-- Botón de compartir -->
+            <div class="btn share-container">
+                <i class="fa-solid fa-share"></i>
+                <span>Compartir</span>
+            </div>
+        </div>
+    </div>
+
+    <img class="post-img" src="{% static 'IMG/placeholder.jpg' %}" alt="Placeholder">
+</div>
+
+<style>
+/* Estilo general de los botones */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    background-color: #fff; /* Fondo blanco */
+    border-radius: 10px;
+    margin: 1vh;
+    height: 40px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+    color: #333; /* Texto gris oscuro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Efecto hover: invierte los colores al pasar el cursor */
+.btn:hover {
+    background-color: #333; /* Fondo gris oscuro */
+    color: #fff; /* Texto blanco */
+}
+
+/* Estilo especial para el botón de votos */
+.votes-container {
+    display: flex;
+    gap: 10px; /* Espacio entre los íconos y el conteo de votos */
+    position: relative;
+    background: white;
+}
+
+/* Flecha hacia arriba */
+.vote-up {
+    margin-left: -0.6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px 10px 0px 10px;
+    background-color: #fff;
+    transition: background 0.3s ease;
+}
+
+/* Flecha hacia abajo */
+.vote-down {
+    margin-right: -0.6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 0px 10px 10px 10px;
+    background-color: #fff;
+    transition: background 0.3s ease;
+}
+
+/* Hover en la flecha hacia arriba: mitad naranjo cálido */
+.vote-up:hover {
+    background: linear-gradient(90deg, #FF7D50 100%, #fff 50%);
+}
+
+/* Hover en la flecha hacia abajo: mitad morado */
+.vote-down:hover {
+    background: linear-gradient(270deg, #C050FF 100%, #fff 50%);
+}
+
+/* Ajustes para los íconos */
+.votes-container i {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Contadores de votos y comentarios */
+.vote-count, .comment-count {
+    margin: 0 10px;
+    font-size: 1rem;
+}
+
+/* Botón de compartir */
+.share-container span {
+    margin-left: 5px;
+}
+
+/* Estilo de cada post */
+.post {
+    margin: 0 10px 5px 10px; /* Combina márgenes */
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 70%; /* Ancho por defecto */
+    position: relative;
+    min-height: 350px; /* Asegura un mínimo de altura para prevenir solapamientos */
+}
+
+/* Hover para cada post */
+.post:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    background-color: rgba(211, 211, 211, 0.5);
+}
+
+/* Estilos para el contenedor de contenido */
+.post-content {
+    flex: 1;
+    margin-right: 20px;
+    padding-bottom: 40px;
+}
+
+/* Imagen del post */
+.post-img {
+    width: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+    position: relative;
+}
+
+/* Estilos para el título y descripción */
+.post-title {
+    font-size: 1.75rem;
+    margin-bottom: 10px;
+    color: #333;
+    max-height: 50%;
+    overflow: hidden;
+}
+
+.post-description {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Estilos para el pie del post */
+.post-footer {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start; /* Alinear a la izquierda */
+}
+
+/* Nuevo footer en móviles */
+.post-footer-mobile {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    z-index: 10;
+}
+
+/* Ajustes responsivos */
+@media screen and (max-width: 1200px) {
+    .post {
+        flex-direction: column; /* Coloca la imagen debajo del contenido */
+        height: auto; /* Elimina la altura fija */
+        width: 100%; /* Cambia el ancho al 100% */
+    }
+
+    .post-img {
+        width: 100%;
+        max-height: 200px;
+        margin-bottom: 10px;
+    }
+
+    .post-content {
+        margin-right: 0;
+        margin-bottom: 20px; /* Agrega espacio adicional debajo del contenido */
+    }
+
+    .post-footer {
+        display: none; /* Ocultar el footer original */
+    }
+
+    .post-footer-mobile {
+        display: flex; /* Mostrar el nuevo footer */
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .post {
+        padding: 10px;
+        width: 100%; /* Cambia el ancho al 100% en pantallas más pequeñas */
+    }
+
+    .post-title {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+    .vote-up, .vote-down {
+        width: 30px;
+        height: 30px;
+    }
+
+    .vote-count, .comment-count {
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .post {
+        width: 100%; /* Cambia el ancho al 100% en pantallas pequeñas */
+    }
+
+    .post-title {
+        font-size: 1.2rem;
+    }
+
+    .post-img {
+        max-height: 150px;
+    }
+
+    .btn {
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    .vote-up, .vote-down {
+        width: 25px;
+        height: 25px;
+    }
+
+    .vote-count, .comment-count {
+        font-size: 0.8rem;
+    }
+
+    .post-footer-mobile {
+        padding: 15px;
+        bottom: 10px;
+    }
+}
+
+
+</style>

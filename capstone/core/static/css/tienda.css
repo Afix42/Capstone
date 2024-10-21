@@ -74,12 +74,17 @@ img {
     transition: 0.5s;
     cursor: pointer;
     opacity: 0;
+    font-weight: bold; /* Aumenta el peso de la fuente */
+    font-size: 1em; /* Aumenta el tamaño de la fuente */
 }
 
-.product-card:hover .card-btn {opacity: 1;}
+.product-card:hover .card-btn {
+    opacity: 1;
+}
 .card-btn:hover {
     background: #ff7d7d;
     color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Agrega una sombra */
 }
 
 .product-info {

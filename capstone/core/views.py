@@ -241,3 +241,9 @@ def comprobar_compatibilidad(request):
             return render(request, 'core/compara.html', {'error': 'Por favor, selecciona dos productos para comparar.'})
 
     return render(request, 'core/compara.html')
+
+
+def foro(request):
+    # Generar una lista de publicaciones (puedes adaptar esto según tus necesidades)
+    publicaciones = range(1, 101)  # Cambia este número según cuántas publicaciones quieras mostrar
+    return render(request, 'core/foro.html', {'publicaciones': publicaciones})

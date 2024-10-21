@@ -7,7 +7,11 @@
         <li><a href="{% url 'home' %}" class="active home-button"><i class="fas fa-home"></i> Hogar</a></li>
         <li><a href="{% url 'compara' %}"><i class="fas fa-hammer"></i> Forja</a></li>
         <li><a href="{% url 'tienda' %}"><i class="fas fa-box"></i> Productos</a></li>
-        <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>
+        <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>  
+        {% if perms.core.add_producto %}
+            <li><a href=""><i class="fas fa-plus"></i> Agregar Producto</a></li>
+        {% endif %}
+        
     </div>
     <div class="right-nav">
         {% if user.is_authenticated %}
@@ -20,8 +24,8 @@
             <li class="nav-right"><a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Crear Cuenta</a></li>
         {% endif %}
     </div>
-    
 </ul>
+
 
 <!-- css -->
 <style>
