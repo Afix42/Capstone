@@ -5,7 +5,9 @@
 <ul class="navbar">
     <div class="left-nav">
         <li><a href="{% url 'home' %}" class="active home-button"><i class="fas fa-home"></i> Hogar</a></li>
+        {% if user.is_authenticated %}
         <li><a href="{% url 'compara' %}"><i class="fas fa-hammer"></i> Forja</a></li>
+        {% endif %}
         <li><a href="{% url 'tienda' %}"><i class="fas fa-box"></i> Productos</a></li>
         <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>  
         {% if perms.core.add_producto %}

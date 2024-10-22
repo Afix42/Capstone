@@ -266,7 +266,7 @@ def comprobar_compatibilidad(request):
                     return es_compatible, "¡El procesador y la placa madre son compatibles!" if es_compatible else "El procesador y la placa madre no son compatibles."
                 
                 # Comparación entre tarjeta gráfica y placa madre (por el socket)
-                elif prod1.tipo_producto.nombre_tipo == 'Tarjeta Gráfica' and prod2.tipo_producto.nombre_tipo == 'Placa Madre':
+                elif prod1.tipo_producto.nombre_tipo == 'Graficas' and prod2.tipo_producto.nombre_tipo == 'Placa Madre':
                     es_compatible = comprobar_socket(prod1, prod2)
                     return es_compatible, "¡La tarjeta gráfica y la placa madre son compatibles!" if es_compatible else "La tarjeta gráfica y la placa madre no son compatibles."
 
@@ -284,7 +284,7 @@ def comprobar_compatibilidad(request):
                     frecuencia_boost_procesador = prod1.frecuencia_boost or prod1.frecuencia_base if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.frecuencia_boost or prod2.frecuencia_base
                     nucleos_procesador = prod1.nucleos if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.nucleos
                     hilos_procesador = prod1.hilos if prod1.tipo_producto.nombre_tipo == 'Procesador' else prod2.hilos
-                    memoria_video = prod1.memoria_video if prod1.tipo_producto.nombre_tipo == 'Tarjeta Gráfica' else prod2.memoria_video
+                    memoria_video = prod1.memoria_video if prod1.tipo_producto.nombre_tipo == 'Grafica' else prod2.memoria_video
 
                     if memoria_video > (nucleos_procesador * 2) and hilos_procesador < 8:
                         mensaje += " Sin embargo, el procesador podría generar un cuello de botella para la tarjeta gráfica."
