@@ -97,6 +97,7 @@
                       <a type='button' class='card-btn' href="{% url 'detalle_producto' p.id %}" style="text-align: center;">Ir al producto</a>
                       {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
                       <a type='button' class='card-btn' href="producto/{{ p.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                      <a type='button' class='card-btn' href="formEditProducto/{{p.id}}" style="text-align: center;">Modificar</a>
                       {% endif %}
                   </div>
               </div>
@@ -129,11 +130,13 @@
                   <span class="discount-tag"></span>
                   <img src="{{ ps.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
                   <div class="button-container"> <!-- Contenedor para los botones -->
+
                       <a type='button' class='card-btn' href="{% url 'detalle_producto' ps.id %}" style="text-align: center;">Ir al producto</a>
-                      {% if user.is_authenticated and user.rol.nombreRol == 'Administrador' %}
-                      <a type='button' class='card-btn' href="producto/{{ ps.id }}/eliminar" style="text-align: center;">Eliminar</a>
-                      {% endif %}
-                  </div>
+                    {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
+                    <a type='button' class='card-btn' href="producto/{{ ps.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                    <a type='button' class='card-btn' href="formEditProducto/{{ps.id}}" style="text-align: center;">Modificar</a>
+                    {% endif %}
+                </div>
               </div>
               {% endif %}
               <div class="product-info">
@@ -164,11 +167,13 @@
                   <span class="discount-tag"></span>
                   <img src="{{ pm.imagen_uno.url }}" class="product-thumb" alt="" style="border-radius: 10px;">
                   <div class="button-container"> <!-- Contenedor para los botones -->
-                      <a type='button' class='card-btn' href="{% url 'detalle_producto' pm.id %}" style="text-align: center;">Ir al producto</a>
-                      {% if user.is_authenticated and user.rol.nombreRol == 'Administrador' %}
-                      <a type='button' class='card-btn' href="producto/{{ pm.id }}/eliminar" style="text-align: center;">Eliminar</a>
-                      {% endif %}
-                  </div>
+
+                    <a type='button' class='card-btn' href="{% url 'detalle_producto' pm.id %}" style="text-align: center;">Ir al producto</a>
+                  {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
+                  <a type='button' class='card-btn' href="producto/{{ pm.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                  <a type='button' class='card-btn' href="formEditProducto/{{pm.id}}" style="text-align: center;">Modificar</a>
+                  {% endif %}
+              </div>
               </div>
               {% endif %}
               <div class="product-info">

@@ -319,3 +319,33 @@ def foro(request):
     # Generar una lista de publicaciones (puedes adaptar esto según tus necesidades)
     publicaciones = range(1, 101)  # Cambia este número según cuántas publicaciones quieras mostrar
     return render(request, 'core/foro.html', {'publicaciones': publicaciones})
+
+
+def form_edit_prod(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    tipo_producto = TipoProducto.objects.all()
+    
+    if request.method == 'POST':
+        # Usa los nombres de los campos en el formulario HTML
+        producto.nombre_producto = request.POST.get('nomProd')
+        producto.descripcion_producto = request.POST.get('descripcionProducto')
+        producto.precio_producto = request.POST.get('precioProducto')
+        producto.stock_producto = request.POST.get('stockProducto')
+        
+        # Relación con TipoProducto (asumiendo que tipo_producto es una relación FK en Producto)
+        tipo_producto_nombre = request.POST.get('tipo_producto')
+        producto.tipo_producto = TipoProducto.objects.get(nombre_tipo=tipo_producto_nombre)
+
+        # Actualizar las imágenes solo si se proporcionan nuevos archivos
+        if 'imagenUno' in request.FILES:
+            producto.imagen_uno = request.FILES['imagenUno']
+        if 'imagenDos' in request.FILES:
+            producto.imagen_dos = request.FILES['imagenDos']
+        if 'imagenTres' in request.FILES:
+            producto.imagen_tres = request.FILES['imagenTres']
+        if 'imagenCuatro' in request.FILES:
+            producto.imagen_cuatro = request.FILES['imagenCuatro']
+
+        producto.save()
+
+    return render(request, 'core/form_editar_productos.html', {'producto': producto, 'tipo_producto': tipo_producto})

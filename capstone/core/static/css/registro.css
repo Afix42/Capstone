@@ -83,3 +83,34 @@ body {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+textarea {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    height: 100px; /* Ajusta la altura según lo que necesites */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Permite cambiar el tamaño verticalmente */
+}
+
+.image-row {
+    display: flex;
+    gap: 5px; /* Reduce el espacio entre los campos de imagen */
+    margin-bottom: 10px; /* Reduce el espacio entre las filas */
+}
+
+.small-form-group {
+    flex: 1;
+    max-width: 45%; /* Limita el ancho de cada campo de imagen */
+}
+
+.small-form-group label {
+    font-size: 14px; /* Reduce el tamaño de la etiqueta */
+    margin-bottom: 4px; /* Reduce el espacio entre la etiqueta y el campo */
+}
+
+.small-form-group input[type="file"] {
+    width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+    padding: 4px; /* Reduce el espacio interno */
+    font-size: 12px; /* Reduce el tamaño del texto */
+}

@@ -50,4 +50,15 @@ function showSlides(n) {
   dots[slideIndex - 1].className += " active";
 }
 
+(function () {
+  const btnConfirmacion = document.querySelectorAll(".btnConfirmacion");
 
+  btnConfirmacion.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const confirmacion = confirm('¿Seguro que deseas actualizar este producto?');
+      if (!confirmacion) {
+        e.preventDefault();
+      }
+    });
+  });
+})();

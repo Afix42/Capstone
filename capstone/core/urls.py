@@ -21,4 +21,5 @@ urlpatterns = [
     path('registrar/',views.registro_view, name='registrarse'),
     path('perfil/', views.perfil, name='perfil'),
     path('cambiar-contraseña/', views.change_password, name='change_password'),
+    path('tienda/formEditProducto/<int:producto_id>/', views.form_edit_prod, name='formEditProd')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
