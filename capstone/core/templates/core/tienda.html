@@ -96,7 +96,7 @@
 
                       <a type='button' class='card-btn' href="{% url 'detalle_producto' p.id %}" style="text-align: center;">Ir al producto</a>
                       {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
-                      <a type='button' class='card-btn' href="producto/{{ p.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                      <a type='button' class='card-btn' href="eliminar_producto/{{ p.id }}" style="text-align: center;">Eliminar</a>
                       <a type='button' class='card-btn' href="formEditProducto/{{p.id}}" style="text-align: center;">Modificar</a>
                       {% endif %}
                   </div>
@@ -105,6 +105,11 @@
               <div class="product-info">
                   <h8 class="product-brand">{{ p.nombre_producto }}</h8><br>
                   <span class="price">${{ p.precio_producto | intcomma }}</span><span class="actual-price"></span>
+                  {% if p.activo %}
+                  <span class="badge badge-success">Activo</span>
+                  {% else %}
+                  <span class="badge badge-danger">Inactivo</span>
+                  {% endif %}
               </div>
           </div>
           {% endfor %}
@@ -133,7 +138,7 @@
 
                       <a type='button' class='card-btn' href="{% url 'detalle_producto' ps.id %}" style="text-align: center;">Ir al producto</a>
                     {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
-                    <a type='button' class='card-btn' href="producto/{{ ps.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                    <a type='button' class='card-btn' href="eliminar_producto/{{ ps.id }}" style="text-align: center;">Eliminar</a>
                     <a type='button' class='card-btn' href="formEditProducto/{{ps.id}}" style="text-align: center;">Modificar</a>
                     {% endif %}
                 </div>
@@ -142,6 +147,11 @@
               <div class="product-info">
                   <h8 class="product-brand">{{ ps.nombre_producto }}</h8><br>
                   <span class="price">${{ ps.precio_producto | intcomma }}</span><span class="actual-price"></span>
+                  {% if ps.activo %}
+                  <span class="badge badge-success">Activo</span>
+                  {% else %}
+                  <span class="badge badge-danger">Inactivo</span>
+                  {% endif %}
               </div>
           </div>
           {% endfor %}
@@ -170,7 +180,7 @@
 
                     <a type='button' class='card-btn' href="{% url 'detalle_producto' pm.id %}" style="text-align: center;">Ir al producto</a>
                   {% if perms.core.delete_producto %} <!-- Cambia 'add_producto' a 'delete_producto' según sea necesario -->
-                  <a type='button' class='card-btn' href="producto/{{ pm.id }}/eliminar" style="text-align: center;">Eliminar</a>
+                  <a type='button' class='card-btn' href="eliminar_producto/{{ pm.id }}" style="text-align: center;">Eliminar</a>
                   <a type='button' class='card-btn' href="formEditProducto/{{pm.id}}" style="text-align: center;">Modificar</a>
                   {% endif %}
               </div>
@@ -179,6 +189,11 @@
               <div class="product-info">
                   <h8 class="product-brand">{{ pm.nombre_producto }}</h8><br>
                   <span class="price">${{ pm.precio_producto | intcomma }}</span><span class="actual-price"></span>
+                  {% if pm.activo %}
+                  <span class="badge badge-success">Activo</span>
+                  {% else %}
+                  <span class="badge badge-danger">Inactivo</span>
+                  {% endif %}
               </div>
           </div>
           {% endfor %}

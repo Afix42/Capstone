@@ -42,9 +42,14 @@ def tienda(request):
     tipo_graficas = TipoProducto.objects.get(nombre_tipo='Graficas')  # Asegúrate de que 'Graficas' existe
     tipo_procesador = TipoProducto.objects.get(nombre_tipo='Procesador')
     tipo_placamadre = TipoProducto.objects.get(nombre_tipo='Placa Madre')
-    productos_graficas = Producto.objects.filter(tipo_producto=tipo_graficas)  # Filtrar productos
-    productos_procesador = Producto.objects.filter(tipo_producto=tipo_procesador)
-    productos_placamadre = Producto.objects.filter(tipo_producto=tipo_placamadre)
+    if request.user.is_staff:
+        productos_graficas = Producto.objects.filter(tipo_producto=tipo_graficas)  # Filtrar productos
+        productos_procesador = Producto.objects.filter(tipo_producto=tipo_procesador)
+        productos_placamadre = Producto.objects.filter(tipo_producto=tipo_placamadre)
+    else:
+        productos_graficas = Producto.objects.filter(tipo_producto=tipo_graficas, activo=True)  # Filtrar productos
+        productos_procesador = Producto.objects.filter(tipo_producto=tipo_procesador, activo=True)
+        productos_placamadre = Producto.objects.filter(tipo_producto=tipo_placamadre, activo=True)
     return render(request, 'core/tienda.html', {'productos': productos_graficas, 'procesadores': productos_procesador, 'placamadre': productos_placamadre})  # Pasar los productos a la plantilla
 
 def vista_usuario(request):
@@ -398,7 +403,8 @@ def form_edit_prod(request, producto_id):
         producto.descripcion_producto = request.POST.get('descripcionProducto')
         producto.precio_producto = request.POST.get('precioProducto')
         producto.stock_producto = request.POST.get('stockProducto')
-        
+        # Manejar el campo de estado "activo"
+        producto.activo = 'activo' in request.POST  # Quedará activo si la checkbox está marcada
         # Relación con TipoProducto (asumiendo que tipo_producto es una relación FK en Producto)
         tipo_producto_nombre = request.POST.get('tipo_producto')
         producto.tipo_producto = TipoProducto.objects.get(nombre_tipo=tipo_producto_nombre)
@@ -413,6 +419,51 @@ def form_edit_prod(request, producto_id):
         if 'imagenCuatro' in request.FILES:
             producto.imagen_cuatro = request.FILES['imagenCuatro']
 
+        messages.success(request, 'Producto modificado correctamente')
         producto.save()
 
     return render(request, 'core/form_editar_productos.html', {'producto': producto, 'tipo_producto': tipo_producto})
+
+def formAgregarProd(request):
+    tipo_producto = TipoProducto.objects.all()
+    if request.method == "POST":
+        pro = Producto()
+        pro.nombre_producto = request.POST.get('nomProd')
+        pro.descripcion_producto = request.POST.get('descripcionProducto')
+        pro.precio_producto = request.POST.get('precioProducto')
+        pro.stock_producto = request.POST.get('stockProducto')
+
+        # Buscar el tipo de producto en la base de datos
+        tipo_producto_nombre = request.POST.get('tipo_producto')
+        ti_producto = TipoProducto.objects.filter(nombre_tipo=tipo_producto_nombre).first()
+
+        # Verificar si el tipo de producto existe
+        if ti_producto:
+            pro.tipo_producto = ti_producto
+        else:
+            messages.error(request, 'Tipo de producto no válido')
+            return redirect('agregar_producto')
+
+        # Guardar imágenes
+        pro.imagen_uno = request.FILES.get('imagenUno')
+        pro.imagen_dos = request.FILES.get('imagenDos')
+        pro.imagen_tres = request.FILES.get('imagenTres')
+        pro.imagen_cuatro = request.FILES.get('imagenCuatro')
+
+        # Guardar el producto
+        try:
+            pro.save()
+            messages.success(request, 'Producto agregado correctamente')
+            return redirect('agregar_producto')
+        except Exception as e:
+            messages.error(request, f'No se pudo agregar el producto: {str(e)}')
+
+    return render(request, 'core/form_agregar_productos.html', {'tipo_producto': tipo_producto})
+
+
+def eliminar_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    producto.activo = False  # Cambiar el estado a inactivo
+    producto.save()
+    messages.success(request, 'Producto eliminado correctamente')
+    return redirect('tienda')  # Redirigir a la lista de productos

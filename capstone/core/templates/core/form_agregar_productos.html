@@ -14,7 +14,7 @@
 </head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modificar información productos</title>
+<title>Agregar productos</title>
 <style>
     /* Asegúrate de ajustar la ruta de la imagen según su ubicación */
     body {
@@ -106,22 +106,6 @@
     #volverTienda:hover {
         color: black
     }
-    /* Asegúrate de que .checkbox-group tenga la alineación correcta */
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-    }
-
-    /* Agrega margen entre el label y el checkbox */
-    .checkbox-group label {
-        margin-right: 8px;
-    }
-
-    /* Opcional: Cambia el ancho de .checkbox-group para mejorar el diseño */
-    .checkbox-group {
-        width: 18%;
-    }
 </style>
 
 <body>
@@ -133,30 +117,26 @@
     <script src="{% static 'js/home.js' %}"></script>
 </body>
 <div class="form-container">
+
     <form class="register-form" action="" method="POST" enctype="multipart/form-data">
+
         {% csrf_token %}
-        <h5>Modificación de productos</h5>
+        <h5>Agregar productos</h5>
         <div class="form-group">
             <label for="nomProd">Nombre</label>
-            <input type="text" id="nomProd" name="nomProd" required value="{{producto.nombre_producto}}">
+            <input type="text" id="nomProd" name="nomProd" required>
         </div>
         <div class="form-group">
             <label for="descripcionProducto">Descripcion</label>
-            <textarea id="descripcionProducto" name="descripcionProducto"
-                required>{{ producto.descripcion_producto }}</textarea>
+            <textarea id="descripcionProducto" name="descripcionProducto" required></textarea>
         </div>
         <div class="form-group">
-            <label for="estadoProd">Precio</label>
-            <input type="number" id="precioProducto" name="precioProducto" required
-                value="{{producto.precio_producto}}">
-        </div>
-        <div class="form-group checkbox-group">
-            <label for="activo">Activo: </label>
-            <input type="checkbox" id="activo" name="activo" {% if producto.activo %}checked{% endif %}>
+            <label for="precioProducto">Precio</label>
+            <input type="number" id="precioProducto" name="precioProducto" required>
         </div>
         <div class="form-group">
             <label for="stockProducto">Stock</label>
-            <input type="number" id="stockProducto" name="stockProducto" required value="{{producto.stock_producto}}">
+            <input type="number" id="stockProducto" name="stockProducto" required>
         </div>
         <div class="form-group">
             <label for="tipo_producto">Tipo de producto: </label>
@@ -202,14 +182,13 @@
                 {% endif %}
             </div>
         </div>
-        <button type="submit" class="submit-button login-button btnConfirmacion">Actualizar información</button>
-        <button type="button" class="submit-button login-button"><a href="{% url 'tienda' %}" id="volverTienda">Volver a
-                la tienda</a></button>
+        <button type="submit" class="submit-button login-button">Agregar producto</button>
+        <button type="button" class="submit-button login-button"><a href="{% url 'tienda' %}" id="volverTienda">Volver a la tienda</a></button>
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>{{ message }}</strong>
+        <div class="alert alert-dismissible alert-success fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+            <strong class="text-dark">{{ message }}</strong>
         </div>
         {% endfor %}
         {% endif %}

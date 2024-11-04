@@ -44,7 +44,7 @@ class Producto(models.Model):
     imagen_tres = models.ImageField(upload_to="productos/", verbose_name='Tercera imagen', null=True, blank=True)
     imagen_cuatro = models.ImageField(upload_to="productos/", verbose_name='Cuarta imagen', null=True, blank=True)
     tipo_producto = models.ForeignKey(TipoProducto, on_delete=models.PROTECT, verbose_name='Tipo de producto', null=True)
-    
+    activo = models.BooleanField(default=True)  # Campo para borrado suave
     # Campos generales para productos tecnológicos
     marca = models.CharField(max_length=50, verbose_name='Marca del producto', null=True, blank=True)
     modelo = models.CharField(max_length=100, verbose_name='Modelo del producto', null=True, blank=True)
