@@ -1,6 +1,6 @@
 {% load static %}
 
-<a href="{% url 'post' %}" class="post">
+<a href="{% url 'post_detail' post.id %}" class="post">
     <div class="post-content">
         <h2 class="post-title">{{ post.titulo }}</h2>
         <div class="post-description">
@@ -67,32 +67,16 @@
 .votes-container {
     display: flex;
     gap: 10px; /* Espacio entre los íconos y el conteo de votos */
-    position: relative;
-    background: white;
 }
 
 /* Flecha hacia arriba */
-.vote-up {
-    margin-left: -0.6vh;
+.vote-up, .vote-down {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: 10px 10px 0px 10px;
-    background-color: #fff;
-    transition: background 0.3s ease;
-}
-
-/* Flecha hacia abajo */
-.vote-down {
-    margin-right: -0.6vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 0px 10px 10px 10px;
+    border-radius: 10px;
     background-color: #fff;
     transition: background 0.3s ease;
 }
@@ -166,8 +150,6 @@
     font-size: 1.75rem;
     margin-bottom: 10px;
     color: #333;
-    max-height: 50%;
-    overflow: hidden;
 }
 
 .post-description {
@@ -176,34 +158,14 @@
     color: #666;
     font-style: italic;
     line-height: 1.2;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 /* Estilos para el pie del post */
 .post-footer {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
     display: flex;
     align-items: center;
     width: 100%;
     justify-content: flex-start; /* Alinear a la izquierda */
-}
-
-/* Nuevo footer en móviles */
-.post-footer-mobile {
-    display: none; /* Oculto por defecto */
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
-    z-index: 10;
 }
 
 /* Ajustes responsivos */
@@ -224,16 +186,6 @@
         margin-right: 0;
         margin-bottom: 20px; /* Agrega espacio adicional debajo del contenido */
     }
-
-    .post-footer {
-        display: none; /* Ocultar el footer original */
-    }
-
-    .post-footer-mobile {
-        display: flex; /* Mostrar el nuevo footer */
-        justify-content: center;
-        align-items: center;
-    }
 }
 
 @media screen and (max-width: 768px) {
@@ -248,15 +200,6 @@
 
     .btn {
         height: 35px;
-        font-size: 0.9rem;
-    }
-
-    .vote-up, .vote-down {
-        width: 30px;
-        height: 30px;
-    }
-
-    .vote-count, .comment-count {
         font-size: 0.9rem;
     }
 }
@@ -277,19 +220,6 @@
     .btn {
         height: 30px;
         font-size: 0.8rem;
-    }
-
-    .vote-up, .vote-down {
-        width: 25px;
-        height: 25px;
-    }
-
-    .vote-count, .comment-count {
-        font-size: 0.8rem;
-    }
-
-    .post-footer-mobile {
-        padding: 5px;
     }
 }
 </style>

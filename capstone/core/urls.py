@@ -22,6 +22,6 @@ urlpatterns = [
     path('perfil/', views.perfil, name='perfil'),
     path('cambiar-contraseña/', views.change_password, name='change_password'),
     path('tienda/formEditProducto/<int:producto_id>/', views.form_edit_prod, name='formEditProd'),
-    path('post/', views.post, name='post'),
+    path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     path('crear_post',views.crear_post, name='crear_post' )
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

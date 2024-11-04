@@ -17,6 +17,7 @@ from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import PostForm, ComentarioForm
+import logging
 
 # Create your views here.
 
@@ -320,49 +321,71 @@ def foro(request):
     posts = Post.objects.all().order_by('-fecha_publicacion')
     return render(request, 'core/foro.html', {'posts': posts})
 
+logger = logging.getLogger(__name__)
+
 # Vista para el detalle de un post, ahora renombrada a 'post'
+
 def post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    comentarios = post.comentarios.all()
+    comentarios = post.comentarios.all()  # Obtener comentarios relacionados con el post
 
-    if request.method == "POST":
-        if request.user.is_authenticated:
-            contenido_comentario = request.POST.get("contenido")
-            if contenido_comentario:
-                Comentario.objects.create(
-                    post=post,
-                    autor=request.user,
-                    contenido=contenido_comentario
-                )
-                return redirect('post', post_id=post.id)
-            else:
-                error_message = "El comentario no puede estar vacío."
-        else:
-            return redirect('login')
+    if request.method == 'POST':
+        form = ComentarioForm(request.POST)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.post = post  # Asignar el post al comentario
+            comentario.autor = request.user  # Asignar el autor al comentario
+            comentario.save()
+            return redirect('post', post_id=post.id)  # Redirigir a la misma página
     else:
-        error_message = None
+        form = ComentarioForm()
 
-    return render(request, 'foro/post.html', {
+    context = {
         'post': post,
         'comentarios': comentarios,
-        'error_message': error_message,
-    })
+        'form': form,
+    }
+    return render(request, 'post.html', context)
 
 # Vista para crear un post
 from django.shortcuts import render, redirect
 from .models import Post  # Asegúrate de que tu modelo Post esté importado
 from .forms import PostForm  # Asegúrate de que tu formulario de Post esté importado
 
+@login_required
 def crear_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            post = form.save()  # Guarda el nuevo post
-            return redirect('foro')  # Cambia esto para redirigir a la vista del foro
+            post = form.save(commit=False)  
+            post.autor = request.user  
+            post.save()  
+            return redirect('foro')
     else:
         form = PostForm()
-    
-    return render(request, 'foro/form_crear_post.html', {'form': form})
+    return render(request, 'core/form_crear_post.html', {'form': form})
+
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)  # Obtener el post por su ID
+    comentarios = post.comentarios.all()  # Obtener todos los comentarios relacionados con el post
+
+    if request.method == 'POST':
+        form = ComentarioForm(request.POST)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.post = post  # Asignar el post al comentario
+            comentario.autor = request.user  # Asignar el autor del comentario
+            comentario.save()
+            return redirect('post_detail', post_id=post.id)  # Redirigir a la misma página después de guardar el comentario
+    else:
+        form = ComentarioForm()  # Crear un nuevo formulario vacío si no es POST
+
+    context = {
+        'post': post,  # Pasar el post al contexto
+        'comentarios': comentarios,  # Pasar los comentarios al contexto
+        'form': form,  # Pasar el formulario al contexto
+    }
+    return render(request, 'core/post.html', context)  # Renderizar la plantilla
 
 
 def form_edit_prod(request, producto_id):

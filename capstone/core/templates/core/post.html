@@ -163,21 +163,18 @@
     <!-- Incluir la barra de navegación -->
     {% include 'core/plantillas/navbar.html' %}
 
-    <!-- Contenedor principal del post -->
     <div class="container">
         <!-- Título del post -->
-        <h1 class="post-title">Título del Post Singular</h1>
+        <h1 class="post-title">{{ post.titulo }}</h1>  <!-- Título dinámico -->
 
         <!-- Metadatos del post -->
         <div class="post-metadata">
-            <p>Publicado por <strong>Usuario123</strong> • <i class="fas fa-heart"></i> 85 votos • <i class="fas fa-comment"></i> 30 comentarios</p>
+            <p>Publicado por <strong>{{ post.autor.username }}</strong> • <i class="fas fa-heart"></i> {{ post.votes }} votos • <i class="fas fa-comment"></i> {{ post.comment_count }} comentarios</p>
         </div>
 
         <!-- Contenido principal del post -->
         <div class="post-content">
-            <p>
-                Este es el contenido completo del post singular. Aquí se puede detallar toda la información relevante sobre el tema tratado, los enlaces, las imágenes o cualquier otro recurso que desee el autor.
-            </p>
+            <p>{{ post.contenido }}</p>  <!-- Contenido dinámico -->
         </div>
 
         <!-- Imagen del post -->
@@ -185,19 +182,35 @@
             <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen relacionada con el post">
         </div>
 
-        <!-- Sección de comentarios -->
-        <div class="comments-section" id="comments-section">
-            <h2>Comentarios</h2>
-            <div class="comment" id="comment-1">
-                <p class="comment-author">Usuario456</p>
-                <p class="comment-text">Este es el primer comentario del post. Muy interesante el tema que has planteado.</p>
+       <!-- Sección de comentarios -->
+       <div class="comments-section" id="comments-section">
+        <h2>Comentarios</h2>
+        {% for comentario in comentarios %}
+            <div class="comment" id="comment-{{ comentario.id }}">
+                <p class="comment-author">{{ comentario.autor.username }}</p>
+                <p class="comment-text">{{ comentario.contenido }}</p>
             </div>
-            <div class="comment" id="comment-2">
-                <p class="comment-author">Usuario789</p>
-                <p class="comment-text">Gracias por compartir esta información. Me gustaría saber más detalles sobre el tema.</p>
+        {% empty %}
+            <p>No hay comentarios aún. Sé el primero en comentar.</p>
+        {% endfor %}
+    
+        {% if error_message %}
+            <div class="alert alert-danger">{{ error_message }}</div>
+        {% endif %}
+    
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea name="contenido" class="form-control" rows="3" placeholder="Escribe tu comentario aquí..."></textarea>
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
             </div>
-            <!-- Más comentarios se cargarán dinámicamente -->
-        </div>
+            <button type="submit" class="btn btn-primary">Enviar Comentario</button>
+        </form>
+        
 
         <!-- Paginación en la parte inferior del contenedor -->
         <div class="pagination">
