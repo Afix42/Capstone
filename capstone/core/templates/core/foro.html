@@ -22,8 +22,8 @@
 
                 <!-- Incluir múltiples plantillas de publicación -->
 <!-- Incluir múltiples plantillas de publicación -->
-{% for i in publicaciones %}
-    {% include 'core/plantillas/publicacion.html' %}
+{% for i in posts %}
+    {% include 'core/plantillas/publicacion.html' with post=i %}
 {% endfor %}
 
             </div> <!-- Cierre de main-content -->

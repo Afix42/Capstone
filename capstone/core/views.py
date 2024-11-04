@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
-from .models import Usuario, Rol, Producto, TipoProducto
+from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -12,6 +12,11 @@ from django.contrib import messages
 from django.db import IntegrityError
 from .models import Usuario, Rol
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import authenticate, login as django_login
+from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import PostForm, ComentarioForm
 
 # Create your views here.
 
@@ -31,9 +36,6 @@ def register(request):
 
 def login(request):
     return render(request, 'core/form_login.html')  # Página de inicio de sesión
-
-def foro(request):
-    return render(request, 'core/foro.html')  # Página del foro
 
 def tienda(request):
     tipo_graficas = TipoProducto.objects.get(nombre_tipo='Graficas')  # Asegúrate de que 'Graficas' existe
@@ -157,10 +159,7 @@ def registro_view(request):
 
 
 
-from django.contrib.auth import authenticate, login as django_login
-from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
-from django.shortcuts import render, redirect
-from django.contrib import messages
+
 
 def funcion_login(request):
     if request.method == 'POST':
@@ -315,10 +314,55 @@ def comprobar_compatibilidad(request):
     return render(request, 'core/compara.html')
 
 
+# Vista para la lista de posts, ahora renombrada a 'foro'
 def foro(request):
-    # Generar una lista de publicaciones (puedes adaptar esto según tus necesidades)
-    publicaciones = range(1, 101)  # Cambia este número según cuántas publicaciones quieras mostrar
-    return render(request, 'core/foro.html', {'publicaciones': publicaciones})
+    # Ordenar por el campo correcto que es 'fecha_publicacion'
+    posts = Post.objects.all().order_by('-fecha_publicacion')
+    return render(request, 'core/foro.html', {'posts': posts})
+
+# Vista para el detalle de un post, ahora renombrada a 'post'
+def post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comentarios = post.comentarios.all()
+
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            contenido_comentario = request.POST.get("contenido")
+            if contenido_comentario:
+                Comentario.objects.create(
+                    post=post,
+                    autor=request.user,
+                    contenido=contenido_comentario
+                )
+                return redirect('post', post_id=post.id)
+            else:
+                error_message = "El comentario no puede estar vacío."
+        else:
+            return redirect('login')
+    else:
+        error_message = None
+
+    return render(request, 'foro/post.html', {
+        'post': post,
+        'comentarios': comentarios,
+        'error_message': error_message,
+    })
+
+# Vista para crear un post
+from django.shortcuts import render, redirect
+from .models import Post  # Asegúrate de que tu modelo Post esté importado
+from .forms import PostForm  # Asegúrate de que tu formulario de Post esté importado
+
+def crear_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save()  # Guarda el nuevo post
+            return redirect('foro')  # Cambia esto para redirigir a la vista del foro
+    else:
+        form = PostForm()
+    
+    return render(request, 'foro/form_crear_post.html', {'form': form})
 
 
 def form_edit_prod(request, producto_id):

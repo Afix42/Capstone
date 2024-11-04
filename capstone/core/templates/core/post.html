@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Incluir la plantilla del head -->
+    {% include 'core/plantillas/dame_head.html' %}
+
+    <!-- Cargar estilos y recursos estáticos -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/post.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh; /* Permitir scroll si es necesario */
+            background-image: url("{% static 'IMG/placeholder.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Cambiado a flex-start para alinear el contenedor desde la parte superior */
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(5px);
+            z-index: 2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 3;
+            width: 100%; /* Ancho total */
+            max-width: 800px; /* Ancho máximo del contenedor */
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px; /* Espaciado interno reducido */
+            margin-top: 120px; /* Aumentado el margen superior para bajar el contenedor */
+            min-height: 50vh; /* Altura mínima ajustada */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: auto;
+            margin-right: auto; /* Centrando el contenedor */
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .post-metadata {
+            display: flex;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 20px; /* Reducido el margen inferior */
+        }
+
+        .post-content {
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .post-image img {
+            width: 50%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .comments-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            flex-grow: 1;
+        }
+
+        .comment {
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: auto;
+        }
+
+        .pagination a {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #555;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover,
+        .pagination a.active {
+            background-color: black;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .post-title {
+                font-size: 2rem;
+            }
+
+            .post-content {
+                font-size: 1rem;
+            }
+
+            .post-image img {
+                width: 80%; /* Imagen más grande en pantallas pequeñas */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Incluir la barra de navegación -->
+    {% include 'core/plantillas/navbar.html' %}
+
+    <!-- Contenedor principal del post -->
+    <div class="container">
+        <!-- Título del post -->
+        <h1 class="post-title">Título del Post Singular</h1>
+
+        <!-- Metadatos del post -->
+        <div class="post-metadata">
+            <p>Publicado por <strong>Usuario123</strong> • <i class="fas fa-heart"></i> 85 votos • <i class="fas fa-comment"></i> 30 comentarios</p>
+        </div>
+
+        <!-- Contenido principal del post -->
+        <div class="post-content">
+            <p>
+                Este es el contenido completo del post singular. Aquí se puede detallar toda la información relevante sobre el tema tratado, los enlaces, las imágenes o cualquier otro recurso que desee el autor.
+            </p>
+        </div>
+
+        <!-- Imagen del post -->
+        <div class="post-image">
+            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen relacionada con el post">
+        </div>
+
+        <!-- Sección de comentarios -->
+        <div class="comments-section" id="comments-section">
+            <h2>Comentarios</h2>
+            <div class="comment" id="comment-1">
+                <p class="comment-author">Usuario456</p>
+                <p class="comment-text">Este es el primer comentario del post. Muy interesante el tema que has planteado.</p>
+            </div>
+            <div class="comment" id="comment-2">
+                <p class="comment-author">Usuario789</p>
+                <p class="comment-text">Gracias por compartir esta información. Me gustaría saber más detalles sobre el tema.</p>
+            </div>
+            <!-- Más comentarios se cargarán dinámicamente -->
+        </div>
+
+        <!-- Paginación en la parte inferior del contenedor -->
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+        </div>
+    </div>
+
+    <!-- Script para el scroll infinito -->
+    <script>
+        let page = 1;
+        window.onscroll = function() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                loadMoreComments();
+            }
+        };
+
+        function loadMoreComments() {
+            page += 1;
+            fetch(`/post/{{ post.id }}/comments?page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    const commentsSection = document.getElementById('comments-section');
+                    data.comments.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('comment');
+                        commentDiv.innerHTML = `
+                            <p class="comment-author">${comment.author}</p>
+                            <p class="comment-text">${comment.text}</p>
+                        `;
+                        commentsSection.appendChild(commentDiv);
+                    });
+                });
+        }
+    </script>
+
+    <!-- Cargar archivo JavaScript -->
+    <script src="{% static 'js/post.js' %}"></script>
+
+    <!-- Iconos de Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

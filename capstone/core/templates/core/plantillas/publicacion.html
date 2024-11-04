@@ -1,13 +1,11 @@
 {% load static %}
 
-<div class="post">
+<a href="{% url 'post' %}" class="post">
     <div class="post-content">
-        <h2 class="post-title">Neque porro quisquam est qui dolor</h2>
+        <h2 class="post-title">{{ post.titulo }}</h2>
         <div class="post-description">
-            <p>Lorem Ipsum es simplemente el texto de relleno de las imprentas.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p>Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
-            <p>Sed nisi. Nulla quis sem at nibh elementum imperdiet.</p>
+            <p>Publicado por: {{ post.autor }} el {{ post.fecha_publicacion }}</p>
+            <p>{{ post.contenido }}</p>
         </div>
 
         <!-- Nuevo pie de post con botones invertidos -->
@@ -38,7 +36,7 @@
     </div>
 
     <img class="post-img" src="{% static 'IMG/placeholder.jpg' %}" alt="Placeholder">
-</div>
+</a>
 
 <style>
 /* Estilo general de los botones */
@@ -291,10 +289,7 @@
     }
 
     .post-footer-mobile {
-        padding: 15px;
-        bottom: 10px;
+        padding: 5px;
     }
 }
-
-
 </style>
