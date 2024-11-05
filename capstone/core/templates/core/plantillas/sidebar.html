@@ -9,31 +9,13 @@
             <p>Contenido destacado aquí...</p>
         </div>
     </div>
-    <div class="highlighted-post">
-        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
-        <div>
-            <h3>Post destacado 2</h3>
-            <p>Contenido destacado aquí...</p>
-        </div>
-    </div>
-    <div class="highlighted-post">
-        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
-        <div>
-            <h3>Post destacado 3</h3>
-            <p>Contenido destacado aquí...</p>
-        </div>
-    </div>
-
     <!-- Sección de cuenta de usuario -->
     <div class="user-account">
         <h3><i class="fa-solid fa-user"></i> PC Forge</h3>
         <div class="account-buttons">
             <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-file-alt"></i> Reglas de contenido</button>
             <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-lock"></i> Reglas de privacidad</button>
-            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-scroll"></i> E.U.L.A</button>
-            <a href="{% url 'crear_post' %}" class="btn btn-primary w-100">
-                <i class="fa-solid fa-plus"></i> Crear post
-            </a>
+            <a href="{% url 'crear_post' %}" class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Crear post  </a>
         </div>
     </div>
 
@@ -87,8 +69,8 @@
 
 /* Posts destacados */
 .highlighted-post {
-    padding: 15px;
-    margin-bottom: 5px;
+    padding: 3px;
+    margin-bottom: 4px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -187,7 +169,7 @@
     }
 
     .user-account h3 {
-        font-size: 1.25rem; /* Ajustar el tamaño de fuente */
+        font-size: 0.5rem; /* Ajustar el tamaño de fuente */
     }
 
     .account-buttons button {
