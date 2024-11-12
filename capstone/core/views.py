@@ -3,21 +3,19 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
 from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.contrib.auth import logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import IntegrityError
-from .models import Usuario, Rol
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth import authenticate, login as django_login
 from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import PostForm, ComentarioForm
 import logging
+import requests
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
+
 
 # Create your views here.
 
@@ -130,6 +128,24 @@ def change_password(request):
     return render(request, 'core/plantillas/cambio_contra.html')
 
 
+
+
+# Función para verificar si el correo existe a través de un servicio externo
+def verificar_correo_existe(email):
+    api_key = '087d0aa017eb98b860b3b335816ef830142e2c04'
+    url = f"https://api.hunter.io/v2/email-verifier?email={email}&api_key={api_key}"
+
+    response = requests.get(url)
+    data = response.json()
+
+    # Comprueba el estado de la respuesta de la API (esto depende del servicio de verificación que uses)
+    if response.status_code == 200 and data['data']['status'] == 'valid':
+        return True
+    return False
+
+from django.core.mail import send_mail
+from django.conf import settings
+
 def registro_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -137,31 +153,51 @@ def registro_view(request):
         password = request.POST['password']
         repeat_password = request.POST['confirm_password']
 
+        # Validación de formato de correo electrónico
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'El formato del correo electrónico es inválido.')
+            return render(request, 'core/form_registro.html')
+
+        if Usuario.objects.filter(email=email).exists():
+            messages.error(request, 'El correo electrónico ya está registrado.')
+            return render(request, 'core/form_registro.html')
+
+        # Verificación de existencia del correo mediante la API
+        if not verificar_correo_existe(email):
+            messages.error(request, 'La dirección de correo electrónico no es válida o no existe.')
+            return render(request, 'core/form_registro.html')
+
         if password == repeat_password:
             try:
-                # Crea un nuevo usuario utilizando la tabla Usuario
                 user = Usuario.objects.create_user(username=username, email=email, password=password)
                 
-                # Asignar el rol predeterminado
-                rol_predeterminado = Rol.objects.get(nombreRol='Usuario')  # Cambia 'Usuario' por el nombre de tu rol
+                # Asignar rol predeterminado
+                rol_predeterminado = Rol.objects.get(nombreRol='Usuario')
                 user.rol = rol_predeterminado
-                user.save()  # Guarda los cambios del usuario
+                user.save()
                 
-                # Mensaje de éxito
-                messages.success(request, 'Usuario registrado exitosamente.')
-                return redirect('login')  # Redirige a la página de inicio de sesión o donde prefieras
+                # Enviar correo de confirmación
+                asunto = '¡Registro exitoso en nuestra plataforma!'
+                mensaje = f'Hola {username},\n\nGracias por registrarte en nuestra plataforma. Tu cuenta ha sido creada exitosamente.'
+                remitente = settings.DEFAULT_FROM_EMAIL
+                destinatario = [email]
+
+                send_mail(asunto, mensaje, remitente, destinatario)
+
+                messages.success(request, 'Usuario registrado exitosamente. Revisa tu correo para más detalles.')
+                return redirect('login')
+            
             except IntegrityError as e:
-                # Si ocurre una violación de UNIQUE en el campo email
-                if 'UNIQUE constraint' in str(e):
-                    messages.error(request, 'El correo electrónico ya está registrado.')
-                else:
-                    messages.error(request, f'Error al registrar el usuario: {str(e)}')
+                messages.error(request, 'Error al registrar el usuario.')
             except Exception as e:
                 messages.error(request, f'Error inesperado: {str(e)}')
         else:
             messages.error(request, 'Las contraseñas no coinciden')
 
     return render(request, 'core/form_registro.html')
+
 
 
 
