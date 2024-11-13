@@ -1,19 +1,20 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
-from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario
+from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario, Like
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-from core.models import Usuario  # Asegúrate de importar tu modelo de usuario
 from django.contrib import messages
 from .forms import PostForm, ComentarioForm
 import logging
 import requests
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 
 
@@ -487,10 +488,12 @@ def post(request, post_id):
     else:
         form = ComentarioForm()
 
+    # Pasamos el total de likes en `like_count` al contexto
     context = {
         'post': post,
         'comentarios': comentarios,
         'form': form,
+        'like_count': post.total_likes,  # Pasamos el total de likes usando la propiedad `total_likes`
     }
     return render(request, 'post.html', context)
 
@@ -533,6 +536,24 @@ def post_detail(request, post_id):
         'form': form,  # Pasar el formulario al contexto
     }
     return render(request, 'core/post.html', context)  # Renderizar la plantilla
+
+@require_POST
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    user = request.user
+
+    # Lógica para actualizar el conteo de likes
+    if user.is_authenticated:
+        if user in post.likes.all():
+            post.likes.remove(user)  # Quita el "like"
+        else:
+            post.likes.add(user)  # Agrega el "like"
+        
+        # Retorna el nuevo conteo de likes
+        return JsonResponse({"like_count": post.likes.count()})
+    else:
+        return JsonResponse({"error": "User not authenticated"}, status=403)
 
 
 def form_edit_prod(request, producto_id):

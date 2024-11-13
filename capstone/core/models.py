@@ -76,9 +76,28 @@ class Post(models.Model):
     contenido = models.TextField()
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
-
+    
+    # Aquí agregamos el campo ManyToManyField para los likes y le damos un nombre único con `related_name`
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)
+    
     def __str__(self):
         return self.titulo
+    
+    @property
+    def total_likes(self):
+        return self.likes.count()  # Cuenta los likes relacionados con este post
+    
+
+class Like(models.Model):
+    post = models.ForeignKey(Post, related_name="likes_related", on_delete=models.CASCADE)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="likes_given", on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'usuario')  # Evita duplicados
+
+    def __str__(self):
+        return f"{self.usuario} le dio like a {self.post.titulo}"
 
 class Comentario(models.Model):
     post = models.ForeignKey(Post, related_name="comentarios", on_delete=models.CASCADE)

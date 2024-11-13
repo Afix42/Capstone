@@ -169,7 +169,7 @@
 
         <!-- Metadatos del post -->
         <div class="post-metadata">
-            <p>Publicado por <strong>{{ post.autor.username }}</strong> • <i class="fas fa-heart"></i> {{ post.votes }} votos • <i class="fas fa-comment"></i> {{ post.comment_count }} comentarios</p>
+            <p>Publicado por <strong>{{ post.autor.username }}</strong> • <i class="fas fa-heart"></i> {{ like_count }} votos • <i class="fas fa-comment"></i> {{ post.comment_count }} comentarios</p>
         </div>
 
         <!-- Contenido principal del post -->
@@ -246,6 +246,72 @@
                     });
                 });
         }
+
+        function toggleLike(event, postId) {
+        event.preventDefault();  // Evita que el botón recargue la página
+        
+        console.log('Enviando solicitud POST a:', `/like_post/${postId}/`);  // Depuración
+
+        fetch(`/like_post/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // CSRF token de Django
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Error en la respuesta del servidor:', response.statusText);
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Respuesta del servidor:", data); // Mostrar la respuesta del servidor para depuración
+        
+            if (data && data.like_count !== undefined) {
+                const likeCount = document.getElementById(`like-count-${postId}`);
+                likeCount.textContent = data.like_count;
+            } else {
+                console.error('Error en la respuesta del servidor:', data);
+            }
+        })
+        .catch(error => console.error('Error en la solicitud:', error));
+
+        function toggleLike(event, postId) {
+            event.preventDefault();  // Evita que el botón recargue la página
+            
+            console.log('Enviando solicitud POST a:', `/like_post/${postId}/`);  // Depuración
+
+            fetch(`/like_post/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}', // CSRF token de Django
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error en la respuesta del servidor:', response.statusText);
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Respuesta del servidor:", data); // Mostrar la respuesta del servidor para depuración
+            
+                if (data && data.like_count !== undefined) {
+                    // Actualiza el conteo de likes dentro del post
+                    const likeCount = document.getElementById(`like-count-${postId}`);
+                    likeCount.textContent = data.like_count;
+                } else {
+                    console.error('Error en la respuesta del servidor:', data);
+                }
+            })
+            .catch(error => console.error('Error en la solicitud:', error));
+        }
+    }
+
     </script>
 
     <!-- Cargar archivo JavaScript -->

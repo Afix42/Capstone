@@ -12,13 +12,10 @@
         <div class="post-footer">
             <!-- Botón de votos con hover especial para like/dislike -->
             <div class="btn votes-container">
-                <div class="vote-up">
+                <div class="vote-up" onclick="toggleLike(event, `{{ post.id }}`)">
                     <i class="fa-solid fa-up-long"></i>
                 </div>
-                <span class="vote-count">651</span>
-                <div class="vote-down">
-                    <i class="fa-solid fa-down-long"></i>
-                </div>
+                <span class="vote-count" id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
             </div>
 
             <!-- Botón de comentarios -->
@@ -37,6 +34,41 @@
 
     <img class="post-img" src="{% static 'IMG/placeholder.jpg' %}" alt="Placeholder">
 </a>
+
+<script>
+    function toggleLike(event, postId) {
+        event.preventDefault();  // Evita que el botón recargue la página
+        
+        console.log('Enviando solicitud POST a:', `/like_post/${postId}/`);  // Depuración
+
+        fetch(`/like_post/${postId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // CSRF token de Django
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error('Error en la respuesta del servidor:', response.statusText);
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Respuesta del servidor:", data); // Mostrar la respuesta del servidor para depuración
+        
+            if (data && data.like_count !== undefined) {
+                const likeCount = document.getElementById(`like-count-${postId}`);
+                likeCount.textContent = data.like_count;
+            } else {
+                console.error('Error en la respuesta del servidor:', data);
+            }
+        })
+        .catch(error => console.error('Error en la solicitud:', error));
+    }
+
+</script>
 
 <style>
 /* Estilo general de los botones */
