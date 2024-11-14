@@ -37,8 +37,8 @@ class TipoProducto(models.Model):
 class Producto(models.Model):
     nombre_producto = models.CharField(max_length=255, verbose_name='Nombre del producto')
     descripcion_producto = models.TextField(verbose_name='Descripción del producto')
-    precio_producto = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Precio del producto')
-    stock_producto = models.IntegerField(verbose_name='Stock del producto')
+    precio_producto = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Precio del producto', default=0)
+    stock_producto = models.IntegerField(verbose_name='Stock del producto', default=0)
     imagen_uno = models.ImageField(upload_to="productos/", verbose_name='Primera imagen')
     imagen_dos = models.ImageField(upload_to="productos/", verbose_name='Segunda imagen', null=True, blank=True)
     imagen_tres = models.ImageField(upload_to="productos/", verbose_name='Tercera imagen', null=True, blank=True)
@@ -51,7 +51,7 @@ class Producto(models.Model):
     socket = models.CharField(max_length=100, verbose_name='Sockets que contiene el componente', null=True, blank=True)
 
     # Campos específicos para productos como tarjetas gráficas
-    memoria_video = models.IntegerField(verbose_name='Memoria VRAM (GB)', null=True, blank=True)
+    memoria_video = models.IntegerField(verbose_name='Memoria VRAM (GB)', null=True, blank=True, default=0)
     tipo_memoria = models.CharField(max_length=10, verbose_name='Tipo de memoria', null=True, blank=True)  # Para RAM o tarjeta gráfica
 
     # Campos específicos para otros componentes como almacenamiento o RAM
@@ -63,10 +63,10 @@ class Producto(models.Model):
     velocidad_escritura = models.IntegerField(verbose_name='Velocidad de escritura (MB/s)', null=True, blank=True)
 
     # Campos para procesadores
-    frecuencia_base = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Frecuencia base (GHz)', null=True, blank=True)
-    frecuencia_boost = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Frecuencia boost (GHz)', null=True, blank=True)
-    nucleos = models.IntegerField(verbose_name='Número de núcleos', null=True, blank=True)
-    hilos = models.IntegerField(verbose_name='Número de hilos', null=True, blank=True)
+    frecuencia_base = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Frecuencia base (GHz)', null=True, blank=True, default=0)
+    frecuencia_boost = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='Frecuencia boost (GHz)', null=True, blank=True, default=0)
+    nucleos = models.IntegerField(verbose_name='Número de núcleos', null=True, blank=True, default=0)
+    hilos = models.IntegerField(verbose_name='Número de hilos', null=True, blank=True, default=0)
     
     def __str__(self):
         return self.nombre_producto

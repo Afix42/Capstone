@@ -16,7 +16,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Modificar información productos</title>
 <style>
-    /* Asegúrate de ajustar la ruta de la imagen según su ubicación */
+    /* Ajusta el contenedor de tu formulario para mayor tamaño */
+    .form-container {
+        position: relative;
+        z-index: 3;
+        max-width: 1000px; /* Aumenta el ancho máximo */
+        margin: auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden; /* Evita que los elementos se desborden */
+    }
+    .img-thumbnail {
+        max-width: 100%; /* Asegura que las imágenes no se salgan del contenedor */
+        border-radius: 10px;
+    }
     body {
         margin: 0;
         padding: 0;
@@ -136,85 +150,151 @@
     <form class="register-form" action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <h5>Modificación de productos</h5>
-        <div class="form-group">
-            <label for="nomProd">Nombre</label>
-            <input type="text" id="nomProd" name="nomProd" required value="{{producto.nombre_producto}}">
+
+        <div class="form-row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nomProd">Nombre</label>
+                    <textarea type="text" id="nomProd" name="nomProd" required class="form-control">{{producto.nombre_producto}}</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="descripcionProducto">Descripción</label>
+                    <textarea id="descripcionProducto" name="descripcionProducto" required class="form-control">{{producto.descripcion_producto}}</textarea>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="descripcionProducto">Descripcion</label>
-            <textarea id="descripcionProducto" name="descripcionProducto"
-                required>{{ producto.descripcion_producto }}</textarea>
+
+        <div class="form-row">
+            <div class="col-md-4">
+                <label for="precioProducto">Precio</label>
+                <input type="number" id="precioProducto" name="precioProducto" required value="{{ producto.precio_producto }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label for="stockProducto">Stock</label>
+                <input type="number" id="stockProducto" name="stockProducto" required value="{{ producto.stock_producto }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label for="tipo_producto">Tipo de producto</label>
+                <select name="tipo_producto" id="tipo_producto" class="form-control" required onchange="toggleFields()">
+                    <option value="">Seleccionar</option>
+                    {% for m in tipo_producto %}
+                        <option value="{{ m.nombre_tipo }}" {% if producto.tipo_producto == m.nombre_tipo %}selected{% endif %}>{{ m.nombre_tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="estadoProd">Precio</label>
-            <input type="number" id="precioProducto" name="precioProducto" required
-                value="{{producto.precio_producto}}">
+
+        <!-- Campos adicionales comunes en una sola línea -->
+        <div class="form-row">
+            <div class="col-md-3 checkbox-group">
+                <label for="activo">Activo</label>
+                <input type="checkbox" id="activo" name="activo" {% if producto.activo %}checked{% endif %}>
+            </div>
+            <div class="col-md-4">
+                <label for="marca">Marca</label>
+                <input type="text" id="marcaProducto" name="marcaProducto" value="{{ producto.marca }}" class="form-control">
+            </div>
+            <div class="col-md-5">
+                <label for="socket">Socket</label>
+                <input type="text" id="socketProducto" name="socketProducto" value="{{ producto.socket }}" class="form-control">
+            </div>
         </div>
-        <div class="form-group checkbox-group">
-            <label for="activo">Activo: </label>
-            <input type="checkbox" id="activo" name="activo" {% if producto.activo %}checked{% endif %}>
+
+        <!-- Campos específicos para tarjetas de video o procesadores -->
+        <div id="video_fields" class="form-row" style="display: none;">
+            <div class="col-md-6">
+                <label for="memoria_video">Memoria de Video</label>
+                <input type="number" id="memoria_video" name="memoria_video" value="{{ producto.memoria_video }}" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="tipo_memoria">Tipo de Memoria</label>
+                <input type="text" id="tipo_memoria" name="tipo_memoria" value="{{ producto.tipo_memoria }}" class="form-control">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="stockProducto">Stock</label>
-            <input type="number" id="stockProducto" name="stockProducto" required value="{{producto.stock_producto}}">
+
+        <div id="procesador_fields" class="form-row" style="display: none;">
+            <div class="col-md-3">
+                <label for="frecuencia_base">Frecuencia Base</label>
+                
+                <input type="number" id="frecuencia_base" name="frecuencia_base" value="{{ producto.frecuencia_base }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="frecuencia_boost">Frecuencia Boost</label>
+                <input type="number" id="frecuencia_boost" name="frecuencia_boost" value="{{ producto.frecuencia_boost }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="nucleos">Núcleos</label>
+                <input type="number" id="nucleos" name="nucleos" value="{{ producto.nucleos }}" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="hilos">Hilos</label>
+                <input type="number" id="hilos" name="hilos" value="{{ producto.hilos }}" class="form-control">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="tipo_producto">Tipo de producto: </label>
-            <select name="tipo_producto" id="tipo_producto" required>
-                <option value="">Seleccionar</option>
-                {% for m in tipo_producto %}
-                <option value="{{ m.nombre_tipo }}">
-                    {{m.nombre_tipo}}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="image-row">
-            <div class="form-group small-form-group">
-                <label for="imagenUno">Foto Producto: </label>
+
+        <!-- Campos de Imágenes en una sola fila -->
+        <div class="form-row">
+            <div class="col-md-3">
+                <label for="imagenUno">Foto Producto:</label>
                 <input type="file" name="imagenUno" id="imagenUno">
                 {% if producto.imagen_uno %}
-                <img src="{{ producto.imagen_uno.url }}" alt="Imagen Uno" style="width: 100%; border-radius: 10px;">
+                    <img src="{{ producto.imagen_uno.url }}" alt="Imagen Uno" class="img-thumbnail mt-2">
                 {% endif %}
             </div>
-            <div class="form-group small-form-group">
+            <div class="col-md-3">
                 <label for="imagenDos">Foto Producto 2:</label>
                 <input type="file" name="imagenDos" id="imagenDos">
                 {% if producto.imagen_dos %}
-                <img src="{{ producto.imagen_dos.url }}" alt="Imagen Dos" style="width: 100%; border-radius: 10px;">
+                    <img src="{{ producto.imagen_dos.url }}" alt="Imagen Dos" class="img-thumbnail mt-2">
                 {% endif %}
             </div>
-        </div>
-        <div class="image-row">
-            <div class="form-group small-form-group">
+            <div class="col-md-3">
                 <label for="imagenTres">Foto Producto 3:</label>
                 <input type="file" name="imagenTres" id="imagenTres">
                 {% if producto.imagen_tres %}
-                <img src="{{ producto.imagen_tres.url }}" alt="Imagen Tres" style="width: 100%; border-radius: 10px;">
+                    <img src="{{ producto.imagen_tres.url }}" alt="Imagen Tres" class="img-thumbnail mt-2">
                 {% endif %}
             </div>
-            <div class="form-group small-form-group">
+            <div class="col-md-3">
                 <label for="imagenCuatro">Foto Producto 4:</label>
                 <input type="file" name="imagenCuatro" id="imagenCuatro">
                 {% if producto.imagen_cuatro %}
-                <img src="{{ producto.imagen_cuatro.url }}" alt="Imagen Cuatro"
-                    style="width: 100%; border-radius: 10px;">
+                    <img src="{{ producto.imagen_cuatro.url }}" alt="Imagen Cuatro" class="img-thumbnail mt-2">
                 {% endif %}
             </div>
         </div>
-        <button type="submit" class="submit-button login-button btnConfirmacion">Actualizar información</button>
-        <button type="button" class="submit-button login-button"><a href="{% url 'tienda' %}" id="volverTienda">Volver a
-                la tienda</a></button>
+
+        <button type="submit" class="submit-button login-button">Actualizar información</button>
+        <button type="button" class="submit-button login-button"><a href="{% url 'tienda' %}" id="volverTienda">Volver a la tienda</a></button>
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>{{ message }}</strong>
-        </div>
+            <div class="alert alert-dismissible alert-success fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+                <strong class="text-dark">{{ message }}</strong>
+            </div>
         {% endfor %}
-        {% endif %}
+    {% endif %}
+    </form>
 </div>
-</form>
+
+<script>
+    function toggleFields() {
+        const tipoProducto = document.getElementById("tipo_producto").value;
+        
+        // Condicional para mostrar campos de tarjetas de video o procesador
+        document.getElementById("video_fields").style.display = tipoProducto === "Graficas" ? "block" : "none";
+        document.getElementById("procesador_fields").style.display = tipoProducto === "Procesador" ? "block" : "none";
+    }
+
+    // Llamada inicial para el tipo ya seleccionado
+    document.addEventListener("DOMContentLoaded", toggleFields);
+</script>
+
+
+    
+
 <!-- Carga del archivo JavaScript -->
 <script src="{% static 'js/home.js' %}">
 </script>

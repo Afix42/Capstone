@@ -15,7 +15,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-
+from django.core.exceptions import ValidationError
+from decimal import Decimal, InvalidOperation
 
 
 # Create your views here.
@@ -556,18 +557,38 @@ def like_post(request, post_id):
         return JsonResponse({"error": "User not authenticated"}, status=403)
 
 
+from django.core.exceptions import ValidationError
+from decimal import Decimal
+
+from decimal import Decimal, InvalidOperation
+
 def form_edit_prod(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     tipo_producto = TipoProducto.objects.all()
-    
+
     if request.method == 'POST':
-        # Usa los nombres de los campos en el formulario HTML
         producto.nombre_producto = request.POST.get('nomProd')
         producto.descripcion_producto = request.POST.get('descripcionProducto')
+
+        # Validación de precio: verifica si el valor no es vacío o None
         producto.precio_producto = request.POST.get('precioProducto')
         producto.stock_producto = request.POST.get('stockProducto')
+        producto.marca = request.POST.get('marcaProducto')
+        producto.socket = request.POST.get('socketProducto')
+
+        # Campos específicos para productos como tarjetas gráficas
+        producto.memoria_video = request.POST.get('memoria_video')
+        producto.tipo_memoria = request.POST.get('tipo_memoria')
+
+        # Campos para procesadores
+        producto.frecuencia_base = request.POST.get('frecuencia_base')
+        producto.frecuencia_boost = request.POST.get('frecuencia_boost')
+        producto.nucleos = request.POST.get('nucleos')
+        producto.hilos = request.POST.get('hilos')
+
         # Manejar el campo de estado "activo"
         producto.activo = 'activo' in request.POST  # Quedará activo si la checkbox está marcada
+
         # Relación con TipoProducto (asumiendo que tipo_producto es una relación FK en Producto)
         tipo_producto_nombre = request.POST.get('tipo_producto')
         producto.tipo_producto = TipoProducto.objects.get(nombre_tipo=tipo_producto_nombre)
@@ -582,10 +603,34 @@ def form_edit_prod(request, producto_id):
         if 'imagenCuatro' in request.FILES:
             producto.imagen_cuatro = request.FILES['imagenCuatro']
 
-        messages.success(request, 'Producto modificado correctamente')
-        producto.save()
+        # Imprimir los valores antes de guardar para depurar
+        print(f"Nombre: {producto.nombre_producto}")
+        print(f"Descripción: {producto.descripcion_producto}")
+        print(f"Precio: {producto.precio_producto}")
+        print(f"Stock: {producto.stock_producto}")
+        print(f"Marca: {producto.marca}")
+        print(f"Socket: {producto.socket}")
+        print(f"Activo: {producto.activo}")
+        print(f"Tipo Producto: {producto.tipo_producto.nombre_tipo}")
+        print(f"Memoria Video: {producto.memoria_video}")
+        print(f"Tipo de Memoria: {producto.tipo_memoria}")
+        print(f"Frecuencia Base:{producto.frecuencia_base}")
+        print(f"Frecuencia Boost:{producto.frecuencia_boost}")
+        print(f"Nucleos:{producto.nucleos}")
+        print(f"Hilos:{producto.hilos}")
+
+        # Guardar el producto
+        try:
+            producto.save()
+            messages.success(request, 'Producto modificado correctamente.')
+        except Exception as e:
+            print(f"Error al guardar el producto: {e}")
+            messages.error(request, 'Hubo un error al guardar el producto.')
 
     return render(request, 'core/form_editar_productos.html', {'producto': producto, 'tipo_producto': tipo_producto})
+
+
+
 
 def formAgregarProd(request):
     tipo_producto = TipoProducto.objects.all()
@@ -595,6 +640,18 @@ def formAgregarProd(request):
         pro.descripcion_producto = request.POST.get('descripcionProducto')
         pro.precio_producto = request.POST.get('precioProducto')
         pro.stock_producto = request.POST.get('stockProducto')
+        pro.marca = request.POST.get('marca')
+        pro.socket = request.POST.get('socket')
+
+        # Campos específicos para productos como tarjetas gráficas
+        pro.memoria_video = request.POST.get('memoria_video')
+        pro.tipo_memoria = request.POST.get('tipo_memoria')
+
+        # Campos para procesadores
+        pro.frecuencia_base = request.POST.get('frecuencia_base')
+        pro.frecuencia_boost = request.POST.get('frecuencia_boost')
+        pro.nucleos = request.POST.get('nucleos')
+        pro.hilos = request.POST.get('hilos')
 
         # Buscar el tipo de producto en la base de datos
         tipo_producto_nombre = request.POST.get('tipo_producto')

@@ -138,16 +138,74 @@
             <label for="stockProducto">Stock</label>
             <input type="number" id="stockProducto" name="stockProducto" required>
         </div>
-        <div class="form-group">
-            <label for="tipo_producto">Tipo de producto: </label>
-            <select name="tipo_producto" id="tipo_producto" required>
-                <option value="">Seleccionar</option>
-                {% for m in tipo_producto %}
-                <option value="{{ m.nombre_tipo }}">
-                    {{m.nombre_tipo}}
-                </option>
-                {% endfor %}
-            </select>
+        <!-- Tipo de Producto -->
+        <div class="form-group row">
+            <label for="tipo_producto" class="col-sm-3 col-form-label">Tipo de producto</label>
+            <div class="col-sm-9">
+                <select name="tipo_producto" id="tipo_producto" class="form-control" required onchange="toggleFields()">
+                    <option value="">Seleccionar</option>
+                    {% for m in tipo_producto %}
+                    <option value="{{ m.nombre_tipo }}">{{ m.nombre_tipo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <!-- Campos Adicionales Comunes -->
+        <div class="form-group row">
+            <label for="marca" class="col-sm-3 col-form-label">Marca</label>
+            <div class="col-sm-9">
+                <input type="text" id="marca" name="marca"  class="form-control">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="socket" class="col-sm-3 col-form-label">Socket</label>
+            <div class="col-sm-9">
+                <input type="text" id="socket" name="socket" class="form-control">
+            </div>
+        </div>
+
+        <!-- Campos específicos para Tarjetas de Video -->
+        <div id="video_fields" style="display: none;">
+            <div class="form-group row">
+                <label for="memoria_video" class="col-sm-3 col-form-label">Memoria de Video</label>
+                <div class="col-sm-9">
+                    <input type="text" id="memoria_video" name="memoria_video" class="form-control" value="0">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="tipo_memoria" class="col-sm-3 col-form-label">Tipo de Memoria</label>
+                <div class="col-sm-9">
+                    <input type="text" id="tipo_memoria" name="tipo_memoria" class="form-control" value="Tipo de memoria">
+                </div>
+            </div>
+        </div>
+
+        <!-- Campos específicos para Procesadores -->
+        <div id="procesador_fields" style="display: none;">
+            <div class="form-group row">
+                <label for="frecuencia_base" class="col-sm-3 col-form-label">Frecuencia Base</label>
+                <div class="col-sm-9">
+                    <input type="text" id="frecuencia_base" name="frecuencia_base" class="form-control" value="0">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="frecuencia_boost" class="col-sm-3 col-form-label">Frecuencia Boost</label>
+                <div class="col-sm-9">
+                    <input type="text" id="frecuencia_boost" name="frecuencia_boost" class="form-control" value="0">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="nucleos" class="col-sm-3 col-form-label">Núcleos</label>
+                <div class="col-sm-9">
+                    <input type="number" id="nucleos" name="nucleos" class="form-control"value="0"> 
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="hilos" class="col-sm-3 col-form-label">Hilos</label>
+                <div class="col-sm-9">
+                    <input type="number" id="hilos" name="hilos" class="form-control"value="0">
+                </div>
+            </div>
         </div>
         <div class="image-row">
             <div class="form-group small-form-group">
@@ -194,9 +252,23 @@
         {% endif %}
 </div>
 </form>
-<!-- Carga del archivo JavaScript -->
-<script src="{% static 'js/home.js' %}">
+<script>
+    function toggleFields() {
+        const tipoProducto = document.getElementById("tipo_producto").value;
+        
+        // Condicional para mostrar campos de tarjetas de video o procesador
+        document.getElementById("video_fields").style.display = tipoProducto === "Graficas" ? "block" : "none";
+        document.getElementById("procesador_fields").style.display = tipoProducto === "Procesador" ? "block" : "none";
+    }
+
+    // Llamada inicial para el tipo ya seleccionado
+    document.addEventListener("DOMContentLoaded", toggleFields);
 </script>
+<!-- Carga del archivo JavaScript -->
+<script src="{% static 'js/home.js' %}"></script>
+
+
+
 </body>
 <!-- Footer -->
 
