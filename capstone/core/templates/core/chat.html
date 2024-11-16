@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+{% include 'core/plantillas/dame_head.html' %}
+{% include 'core/plantillas/navbar.html' %}
+
+<body>
+    <br>
+    <!-- Chat Container and Sidebar -->
+    <div class="container mt-5 pt-4">
+        <div class="row">
+            <!-- Chatbox -->
+            <div class="col-md-8 pr-0">
+                <div class="chatbox bg-light p-3 rounded shadow">
+                    <div class="chat-header bg-dark text-white p-2 rounded-top">
+                        <h5 class="mb-0"><i class="fas fa-robot"></i> Chatbot</h5>
+                    </div>
+                    <div class="chat-body overflow-auto" style="max-height: 500px; min-height: 300px; border: 1px solid #ddd;">
+                        <div class="chat-message mb-2">
+                            <div class="d-flex justify-content-start">
+                                <div class="p-2 bg-secondary text-white rounded">
+                                    <strong>Chatbot:</strong> ¡Hola! ¿En qué puedo ayudarte hoy?
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-footer mt-2">
+                        <form id="chat-form">
+                            <div class="input-group">
+                                <input type="text" id="chat-input" class="form-control" placeholder="Escribe un mensaje..." required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i> Enviar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar con Posts Destacados -->
+            <div class="col-md-4 pl-0">
+                <div class="sidebar bg-light p-3 rounded shadow">
+                    <!-- Ventana para posts destacados -->
+                    <h2 class="sidebar-title"><i class="fa-solid fa-flag"></i> Destacados</h2>
+                    <div class="highlighted-post">
+                        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
+                        <div>
+                            <h3>Post destacado 1</h3>
+                            <p>Contenido destacado aquí...</p>
+                        </div>
+                    </div>
+                    <!-- Sección de cuenta de usuario -->
+                    <div class="user-account">
+                        <h3><i class="fa-solid fa-user"></i> PC Forge</h3>
+                        <div class="account-buttons">
+                            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-file-alt"></i> Reglas de contenido</button>
+                            <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-lock"></i> Reglas de privacidad</button>
+                            <button class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Iniciar Sesión</button>
+                        </div>
+                    </div>
+
+                    <!-- Banner al fondo -->
+                    <div class="sidebar-banner">
+                        <dotlottie-player src="https://lottie.host/090756da-cee3-4e35-9f8a-2343d2777930/uaP49y7FKd.json" 
+                                          background="transparent" 
+                                          speed="1" 
+                                          style="width: 100%; height: 100px;" 
+                                          loop 
+                                          autoplay>
+                        </dotlottie-player>
+                        
+                        <!-- Icono de yunque sobre la animación -->
+                        <div class="banner-icon">
+                            <i class="fa-solid fa-hammer"></i>
+                        </div>
+
+                        <h2>¡Síguenos!</h2>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#"><i class="fab fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        body {
+            width: 100%;
+            height: 91vh;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+            box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.9), 0 5px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            background-color: #f8f9fa;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .chatbox {
+            max-width: 100%;
+            height: 70vh;
+            margin: auto;
+        }
+
+        .chat-body {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            width: 100%;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            top: 0;
+            right: 0;
+            height: 100%;
+        }
+
+        .sidebar-title {
+            text-align: center;
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .highlighted-post {
+            padding: 3px;
+            margin-bottom: 4px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .highlighted-post img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        /* Cambios de color */
+        .highlighted-post h3 {
+            color: #333; /* Color para el título de los posts destacados */
+        }
+
+        .highlighted-post p {
+            color: #333; /* Color para el contenido de los posts destacados */
+        }
+
+        .user-account h3 {
+            color: #333; /* Cambiar color del nombre de usuario */
+        }
+
+        .user-account i {
+            color: #333; /* Cambiar color del icono junto al nombre de usuario */
+        }
+
+        .sidebar-banner {
+            margin-top: 3vh;
+            padding: 10px;
+            background-color: #e1e1e1;
+            border-radius: 10px;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), 
+                        url("https://images3.alphacoders.com/132/1329171.png") center/cover;
+            position: relative;
+        }
+
+        .banner-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: white;
+        }
+
+        .social-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .social-links a:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                margin: 20px 0;
+            }
+
+            .highlighted-post {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .highlighted-post img {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+    </style>
+
+</body>
+
+</html>

@@ -9,7 +9,8 @@
         <li><a href="{% url 'compara' %}"><i class="fas fa-hammer"></i> Forja</a></li>
         {% endif %}
         <li><a href="{% url 'tienda' %}"><i class="fas fa-box"></i> Productos</a></li>
-        <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>  
+        <li><a href="{% url 'foro' %}"><i class="fas fa-comments"></i> Foro</a></li>
+        <li><a href="{% url 'chat' %}"><i class="fas fa-comments"></i> Herrero</a></li>    
         {% if perms.core.add_producto %}
             <li><a href="{% url 'agregar_producto' %}"><i class="fas fa-plus"></i> Agregar Producto</a></li>
         {% endif %}

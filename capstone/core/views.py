@@ -687,3 +687,7 @@ def eliminar_producto(request, producto_id):
     producto.save()
     messages.success(request, 'Producto eliminado correctamente')
     return redirect('tienda')  # Redirigir a la lista de productos
+
+
+def chat(request):
+    return render(request, 'core/chat.html')  # Página de la tienda
