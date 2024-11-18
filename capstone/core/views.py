@@ -16,7 +16,11 @@ from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
-from decimal import Decimal, InvalidOperation
+import ollama
+import json
+#from decimal import Decimal, InvalidOperation
+#import openai
+#import subprocess
 
 
 # Create your views here.
@@ -691,3 +695,32 @@ def eliminar_producto(request, producto_id):
 
 def chat(request):
     return render(request, 'core/chat.html')  # Página de la tienda
+
+@csrf_exempt
+def chatbot_response(request):
+    if request.method == 'POST':
+        try:
+            # Cargar los datos JSON del cuerpo de la solicitud
+            data = json.loads(request.body.decode('utf-8'))
+            user_message = data.get('message', '').strip()  # Asegúrate de manejar posibles espacios
+
+            if not user_message:
+                return JsonResponse({'message': 'Por favor ingresa un mensaje válido.'}, status=400)
+
+            # Llamada a Ollama
+            response = ollama.chat(
+                model='llama3.2',
+                messages=[{'role': 'user', 'content': user_message}]
+            )
+
+            # Procesar la respuesta
+            bot_message = response.get('message', {}).get('content', 'No se obtuvo respuesta.')
+            return JsonResponse({'message': bot_message}, status=200)
+
+        except json.JSONDecodeError as e:
+            return JsonResponse({'message': 'El cuerpo de la solicitud no es un JSON válido.', 'error': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': 'Error interno al procesar la solicitud.', 'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'message': 'Método no permitido.'}, status=405)
+

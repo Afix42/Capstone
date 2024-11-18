@@ -27,9 +27,9 @@ urlpatterns = [
     path('agregar_producto/', views.formAgregarProd, name='agregar_producto'),
     path('tienda/eliminar_producto/<int:producto_id>/',views.eliminar_producto, name='eliminar_producto'),
     path('like_post/<int:post_id>/', views.like_post, name='like_post'),
-    path('chat/', views.chat, name='chat'),  
+    path('chat/', views.chat, name='chat'),
+    path('chatbot_response/', views.chatbot_response, name='chatbot_response'),
     
-
     path('ruta-ajax-compatibilidad/', views.obtener_compatibles, name='ruta-ajax-compatibilidad'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
