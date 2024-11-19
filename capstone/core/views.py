@@ -205,6 +205,68 @@ def registro_view(request):
     return render(request, 'core/form_registro.html')
 
 
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Usuario  # Asegúrate de importar tu modelo Usuario
+
+
+def request_password_reset(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            # Verificar si el usuario existe con ese correo
+            user = Usuario.objects.get(email=email)
+            
+            # Generar y guardar un código de recuperación aleatorio
+            user.generar_codigo_recuperacion()
+
+            # Enviar el código por correo electrónico
+            send_mail(
+                'Código de recuperación de contraseña',
+                f'Tu código de recuperación es: {user.codigo_recuperacion}',
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=False,
+            )
+            
+            messages.success(request, "El código de recuperación ha sido enviado a tu correo electrónico.")# Redirigir al formulario de restablecimiento de contraseña
+            return redirect("reset_password")
+        
+        except Usuario.DoesNotExist:
+            message = "No se encontró un usuario con ese correo electrónico."
+            return render(request, "core/plantillas/request_password_reset.html", {"message": message})
+
+    return render(request, "core/plantillas/request_password_reset.html")
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password
+
+def reset_password(request):
+    message = None
+    if request.method == "POST":
+        recovery_code = request.POST.get("recovery_code")
+        new_password = request.POST.get("new_password")
+
+        try:
+            # Buscar al usuario por el código de recuperación
+            user = Usuario.objects.get(codigo_recuperacion=recovery_code)
+            
+            # Actualizar la contraseña del usuario
+            user.password = make_password(new_password)  # Encripta la contraseña antes de guardarla
+            user.codigo_recuperacion = None  # Borra el código de recuperación
+            user.save()
+
+            messages.success(request, "La contraseña se ha cambiado exitosamente. Ahora puedes iniciar sesión.")
+            return redirect("login")  # Redirige a la página de inicio de sesión
+
+        except Usuario.DoesNotExist:
+            message = "El código de recuperación es incorrecto o ha expirado."
+
+    return render(request, "core/plantillas/reset_password.html", {"message": message})
+
 
 
 

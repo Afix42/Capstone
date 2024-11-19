@@ -31,5 +31,7 @@ urlpatterns = [
     path('chatbot_response/', views.chatbot_response, name='chatbot_response'),
     
     path('ruta-ajax-compatibilidad/', views.obtener_compatibles, name='ruta-ajax-compatibilidad'),
-    
+    path('request-password-reset/', views.request_password_reset, name='request_password_reset'),
+    path('reset-password/', views.reset_password, name='reset_password'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

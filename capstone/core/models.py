@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.conf import settings
-
+from django.utils.crypto import get_random_string
 
 
 # Create your models here.
@@ -25,9 +25,15 @@ class Usuario(AbstractUser):
     rol = models.ForeignKey('Rol', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Rol de Usuario')
     foto_perfil = models.ImageField(upload_to='foto_perfil/', null=True, blank=True, default='foto_perfil/default.jpg')
 
+    # Campo para almacenar el código de recuperación de contraseña
+    codigo_recuperacion = models.CharField(max_length=6, blank=True, null=True)
+
     def __str__(self):
         return self.username
     
+    def generar_codigo_recuperacion(self):
+        self.codigo_recuperacion = get_random_string(length=6, allowed_chars='0123456789')
+        self.save()
 class TipoProducto(models.Model):
     nombre_tipo = models.CharField(max_length=25, verbose_name='Nombre del tipo de producto')
     
