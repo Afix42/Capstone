@@ -498,31 +498,28 @@ def comparar_productos(prod1, prod2):
                     memoria_video = prod1.memoria_video if prod1.tipo_producto.nombre_tipo == 'Graficas' else prod2.memoria_video
 
                     # Verificar si tenemos toda la información necesaria
-                    if frecuencia_boost_procesador is not None and nucleos_procesador is not None and \
-                            hilos_procesador is not None and memoria_video is not None:
-
-                        # Condiciones mejoradas para detectar el cuello de botella
-                        if memoria_video > (nucleos_procesador * 2) and hilos_procesador <= 8:
-                            mensaje += " Sin embargo, el procesador podría generar un cuello de botella para la tarjeta gráfica debido a un número limitado de hilos."
-                        elif frecuencia_boost_procesador > 4.0 and memoria_video < 8:
-                            mensaje += " Sin embargo, la tarjeta gráfica podría generar un cuello de botella para el procesador debido a una frecuencia elevada con poca memoria de video."
+                    if frecuencia_boost_procesador and nucleos_procesador and hilos_procesador and memoria_video:
+                        # Cuello de botella debido al procesador
+                        if memoria_video > (nucleos_procesador * 2) and hilos_procesador < 8:
+                            mensaje += " El procesador podría generar un cuello de botella debido al número limitado de hilos frente a la memoria de video."
                         elif nucleos_procesador < 4 and frecuencia_boost_procesador < 3.0:
-                            mensaje += " El procesador tiene pocos núcleos y frecuencia baja, lo que podría limitar el rendimiento de la tarjeta gráfica."
-                        elif frecuencia_boost_procesador > 5.0 and memoria_video < 4:
-                            mensaje += " El procesador tiene una frecuencia muy alta, pero la tarjeta gráfica podría ser el cuello de botella debido a su baja memoria."
+                            mensaje += " El procesador tiene pocos núcleos y frecuencia baja, lo que limita el rendimiento de la tarjeta gráfica."
                         elif nucleos_procesador < 6 and memoria_video > 6:
-                            mensaje += " El procesador con pocos núcleos podría limitar el rendimiento de la tarjeta gráfica."
-                        elif nucleos_procesador < 4 and frecuencia_boost_procesador < 3.5:
-                            mensaje += " El procesador podría ser el cuello de botella, ya que tiene pocos núcleos y frecuencia baja para aprovechar la tarjeta gráfica."
-                        elif memoria_video > 8 and frecuencia_boost_procesador <= 3.5:
-                            mensaje += " La tarjeta gráfica tiene más memoria de la que el procesador puede manejar eficientemente, generando un cuello de botella."
-                        else:
-                            mensaje += " No hay indicios claros de cuello de botella."
+                            mensaje += " La tarjeta gráfica tiene alta capacidad de memoria, pero el procesador con pocos núcleos podría ser el cuello de botella."
+
+                        # Cuello de botella debido a la tarjeta gráfica
+                        if frecuencia_boost_procesador > 4.0 and memoria_video < 8:
+                            mensaje += " La tarjeta gráfica podría ser un cuello de botella para el procesador debido a la poca memoria de video."
+                        elif frecuencia_boost_procesador > 5.0 and memoria_video < 4:
+                            mensaje += " La tarjeta gráfica tiene una memoria muy baja frente a la frecuencia del procesador, lo que limita el rendimiento."
+
+                        # Evaluación global
+                        if nucleos_procesador >= 6 and frecuencia_boost_procesador >= 4.0 and memoria_video >= 8:
+                            mensaje += " El balance entre procesador y tarjeta gráfica parece adecuado para la mayoría de los escenarios."
                     else:
-                        mensaje += " Sin embargo, no hay suficiente información para evaluar el cuello de botella."
+                        mensaje += " Faltan datos para evaluar el cuello de botella."
 
                     return es_compatible, mensaje
-
 
                 # Si no hay reglas específicas
 
@@ -569,40 +566,63 @@ from django.shortcuts import render, redirect
 from .models import Post  # Asegúrate de que tu modelo Post esté importado
 from .forms import PostForm  # Asegúrate de que tu formulario de Post esté importado
 
+
+
+
+# Lista de malas palabras (puedes ampliarla según necesites)
+BAD_WORDS = ['mala palabra1', 'mala palabra2', 'insulto1', 'insulto2', 'Weon','weon','imbécil', 'imbecil']
+
+def contains_bad_words(text):
+    """
+    Verifica si el texto contiene palabras prohibidas.
+    """
+    for word in BAD_WORDS:
+        if word.lower() in text.lower():
+            return True
+    return False
 @login_required
 def crear_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            post = form.save(commit=False)  
-            post.autor = request.user  
-            post.save()  
-            return redirect('foro')
+            post = form.save(commit=False)
+            if contains_bad_words(post.contenido):  # Cambia `contenido` al campo que contiene el texto
+                form.add_error('contenido', 'Tu publicación contiene palabras inapropiadas.')
+            if contains_bad_words(post.titulo):  # Cambia `contenido` al campo que contiene el texto
+                form.add_error('titulo', 'Tu publicación contiene palabras inapropiadas.')
+            else:
+                post.autor = request.user
+                post.save()
+                return redirect('foro')
     else:
         form = PostForm()
     return render(request, 'core/form_crear_post.html', {'form': form})
 
 def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)  # Obtener el post por su ID
-    comentarios = post.comentarios.all()  # Obtener todos los comentarios relacionados con el post
+    post = get_object_or_404(Post, id=post_id)
+    comentarios = post.comentarios.all()
 
     if request.method == 'POST':
         form = ComentarioForm(request.POST)
         if form.is_valid():
             comentario = form.save(commit=False)
-            comentario.post = post  # Asignar el post al comentario
-            comentario.autor = request.user  # Asignar el autor del comentario
-            comentario.save()
-            return redirect('post_detail', post_id=post.id)  # Redirigir a la misma página después de guardar el comentario
+            if contains_bad_words(comentario.contenido):  # Cambia `contenido` al campo del comentario
+                form.add_error('contenido', 'Tu comentario contiene palabras inapropiadas.')
+            else:
+                comentario.post = post
+                comentario.autor = request.user
+                comentario.save()
+                return redirect('post_detail', post_id=post.id)
     else:
-        form = ComentarioForm()  # Crear un nuevo formulario vacío si no es POST
+        form = ComentarioForm()
 
     context = {
-        'post': post,  # Pasar el post al contexto
-        'comentarios': comentarios,  # Pasar los comentarios al contexto
-        'form': form,  # Pasar el formulario al contexto
+        'post': post,
+        'comentarios': comentarios,
+        'form': form,
     }
-    return render(request, 'core/post.html', context)  # Renderizar la plantilla
+    return render(request, 'core/post.html', context)
+
 
 @require_POST
 def like_post(request, post_id):
@@ -769,14 +789,26 @@ def chatbot_response(request):
             if not user_message:
                 return JsonResponse({'message': 'Por favor ingresa un mensaje válido.'}, status=400)
 
-            # Llamada a Ollama
+            # Mensaje de sistema para limitar el contexto y la longitud
+            system_message = (
+                "Eres un asistente especializado en componentes de PC. Responde únicamente a preguntas "
+                "relacionadas con PCs, componentes, compatibilidad y armado. Mantén tus respuestas claras, "
+                "concisas y breves, usando un máximo de dos o tres oraciones."
+            )
+
+            # Llamada a Ollama con instrucciones específicas
             response = ollama.chat(
                 model='llama3.2',
-                messages=[{'role': 'user', 'content': user_message}]
+                messages=[
+                    {'role': 'system', 'content': system_message},
+                    {'role': 'user', 'content': user_message}
+                ],
+                options={'max_tokens': 100}  # Limita los tokens generados en la respuesta
             )
 
             # Procesar la respuesta
             bot_message = response.get('message', {}).get('content', 'No se obtuvo respuesta.')
+
             return JsonResponse({'message': bot_message}, status=200)
 
         except json.JSONDecodeError as e:

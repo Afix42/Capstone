@@ -15,18 +15,27 @@
         <div class="account-buttons">
             <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-file-alt"></i> Reglas de contenido</button>
             <button class="btn btn-outline-secondary w-100 mb-2"><i class="fa-solid fa-lock"></i> Reglas de privacidad</button>
-            <a href="{% url 'crear_post' %}" class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Crear post  </a>
+            {% if user.is_authenticated %}
+    <a href="{% url 'crear_post' %}" class="btn btn-primary w-100">
+        <i class="fa-solid fa-plus"></i> Crear post
+    </a>
+{% else %}
+    <a href="{% url 'login' %}" class="btn btn-secondary w-100">
+        <i class="fa-solid fa-sign-in-alt"></i> Inicia sesión para crear un post
+    </a>
+{% endif %}
+
         </div>
     </div>
 
     <!-- Banner al fondo -->
     <div class="sidebar-banner">
         <dotlottie-player src="https://lottie.host/090756da-cee3-4e35-9f8a-2343d2777930/uaP49y7FKd.json" 
-                          background="transparent" 
-                          speed="1" 
-                          style="width: 100%; height: 100px;" 
-                          loop 
-                          autoplay>
+                        background="transparent" 
+                        speed="1" 
+                        style="width: 100%; height: 100px;" 
+                        loop 
+                        autoplay>
         </dotlottie-player>
         
         <!-- Icono de yunque sobre la animación -->

@@ -182,8 +182,8 @@
             <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen relacionada con el post">
         </div>
 
-       <!-- Sección de comentarios -->
-       <div class="comments-section" id="comments-section">
+    <!-- Sección de comentarios -->
+    <div class="comments-section" id="comments-section">
         <h2>Comentarios</h2>
         {% for comentario in comentarios %}
             <div class="comment" id="comment-{{ comentario.id }}">
@@ -198,6 +198,7 @@
             <div class="alert alert-danger">{{ error_message }}</div>
         {% endif %}
     
+    {% if user.is_authenticated %}
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
@@ -210,8 +211,12 @@
             </div>
             <button type="submit" class="btn btn-primary">Enviar Comentario</button>
         </form>
+    {% else %}
+        <div class="alert alert-info">
+            <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para escribir un comentario.</p>
+        </div>
+    {% endif %}
         
-
         <!-- Paginación en la parte inferior del contenedor -->
         <div class="pagination">
             <a href="#" class="active">1</a>

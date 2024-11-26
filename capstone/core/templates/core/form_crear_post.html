@@ -54,21 +54,36 @@
 </style>
 <body>
     {% include 'core/plantillas/navbar.html' %}
-    <div class="form-container">
+    <div class="form-container"> 
         <form class="register-form" action="{% url 'crear_post' %}" method="POST">
             {% csrf_token %}
             <h2>Publicar Post</h2>
-            {% if error_message %}
-                <p class="alert">{{ error_message }}</p>
+            
+            <!-- Muestra errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <p class="alert">{{ form.non_field_errors }}</p>
             {% endif %}
+            
             <div class="form-group">
                 <label for="titulo">Título del post</label>
-                <input type="text" id="titulo" name="titulo" placeholder="El título de tu Post" required>
+                <input type="text" id="titulo" name="titulo" placeholder="El título de tu Post" 
+                    value="{{ form.titulo.value|default_if_none:'' }}" required>
+                <!-- Errores del campo título -->
+                {% if form.titulo.errors %}
+                    <p class="alert">{{ form.titulo.errors }}</p>
+                {% endif %}
             </div>
+            
             <div class="form-group">
                 <label for="contenido">Contenido del post</label>
-                <textarea id="contenido" name="contenido" placeholder="Introduce el contenido de tu post" rows="4" required></textarea>
+                <textarea id="contenido" name="contenido" placeholder="Introduce el contenido de tu post" 
+                        rows="4" required>{{ form.contenido.value|default_if_none:'' }}</textarea>
+                <!-- Errores del campo contenido -->
+                {% if form.contenido.errors %}
+                    <p class="alert">{{ form.contenido.errors }}</p>
+                {% endif %}
             </div>
+            
             <button type="submit" class="submit-button login-button">Publicar post</button>
         </form>
     </div>
