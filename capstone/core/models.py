@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.conf import settings
 from django.utils.crypto import get_random_string
-
+from decimal import Decimal
 
 # Create your models here.
 
@@ -113,5 +113,29 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.autor} en {self.post}"
+    
+class Carrito(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='carritos')
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Carrito de {self.usuario.username}"
+    
+    @property
+    def total_carrito(self):
+        return sum(item.subtotal for item in self.items.all())
+
+
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+
+    @property
+    def subtotal(self):
+        return Decimal(self.producto.precio_producto) * Decimal(self.cantidad)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.producto.nombre_producto}"
     
 

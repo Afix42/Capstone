@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as django_login
-from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario, Like
+from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario, Like, Carrito, ItemCarrito
 from django.contrib.auth.models import User
 from django.contrib.auth import logout
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
@@ -303,6 +303,10 @@ def funcion_login(request):
 
     return render(request, 'core/form_login.html')
 
+@login_required
+def carrito(request):
+    return render(request, 'core/carrito.html')  # Página de la tienda
+
 def funcion_logout(request):
     logout(request)  # Esta función cierra la sesión del usuario
     return redirect('home')  # Redirige a la página de inicio o cualquier otra página
@@ -342,9 +346,6 @@ def compara(request):
         'productos1': productos1,
         'productos2': productos2,
     })
-
-
-
 
 
 # archivo views.py
@@ -818,3 +819,106 @@ def chatbot_response(request):
     else:
         return JsonResponse({'message': 'Método no permitido.'}, status=405)
 
+
+@login_required
+def agregar_al_carrito(request, producto_id):
+    try:
+        # Busca el producto por ID o retorna un 404
+        producto = get_object_or_404(Producto, id=producto_id)
+
+        # Verifica si hay stock disponible
+        if producto.stock_producto <= 0:
+            messages.error(request, f"El producto '{producto.nombre_producto}' no tiene stock disponible.")
+            return redirect('detalle_producto', producto_id=producto_id)
+
+        # Inicia una transacción atómica
+        with transaction.atomic():
+            # Obtiene o crea el carrito del usuario
+            carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+
+            # Busca el producto en los ítems del carrito
+            item, item_created = ItemCarrito.objects.get_or_create(carrito=carrito, producto=producto)
+
+            if item_created:
+                # Si el ítem es nuevo, inicializa la cantidad
+                item.cantidad = 1
+            else:
+                # Si ya existe, incrementa la cantidad respetando el stock
+                if item.cantidad < producto.stock_producto:
+                    item.cantidad += 1
+                else:
+                    messages.warning(request, f"No puedes añadir más unidades de '{producto.nombre_producto}', se alcanzó el stock máximo.")
+                    return redirect('ver_carrito')
+
+            # Guarda el ítem actualizado
+            item.save()
+
+            # Notifica al usuario
+            if item_created:
+                messages.success(request, f"El producto '{producto.nombre_producto}' se añadió al carrito.")
+            else:
+                messages.success(request, f"Se añadió otra unidad de '{producto.nombre_producto}' al carrito.")
+
+        return redirect('ver_carrito')  # Redirige a la vista del carrito
+
+    except Producto.DoesNotExist:
+        messages.error(request, "El producto no existe.")
+        return redirect('tienda')
+    except Exception as e:
+        # Captura errores generales
+        messages.error(request, "Ocurrió un error al añadir el producto al carrito. Inténtalo nuevamente.")
+        # Log del error
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error en agregar_al_carrito: {str(e)}")
+        return redirect('tienda')
+
+@login_required
+def ver_carrito(request):
+    carrito = get_object_or_404(Carrito, usuario=request.user)
+    
+    # Calcula el total sumando los subtotales de todos los productos en el carrito
+    total_carrito = carrito.total_carrito  # Usa la propiedad total_carrito
+    
+    print(f"Total del carrito: {total_carrito}")  # Imprime el total para verificar
+    
+    return render(request, 'core/carrito.html', {'carrito': carrito, 'total_carrito': total_carrito})
+
+@login_required
+def eliminar_item(request, item_id):
+    try:
+        # Obtiene el carrito del usuario
+        carrito = Carrito.objects.get(usuario=request.user)
+
+        # Obtiene el item a eliminar del carrito
+        item = get_object_or_404(ItemCarrito, id=item_id, carrito=carrito)
+
+        # Elimina el item del carrito
+        item.delete()
+
+        messages.success(request, f"El producto '{item.producto.nombre_producto}' ha sido eliminado del carrito.")
+        return redirect('ver_carrito')  # Redirige a la vista del carrito
+
+    except ItemCarrito.DoesNotExist:
+        messages.error(request, "El item no se encuentra en tu carrito.")
+        return redirect('ver_carrito')
+    
+@login_required
+@csrf_exempt
+def actualizar_cantidad(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        item_id = data.get('item_id')
+        nueva_cantidad = int(data.get('cantidad', 1))
+
+        # Obtener el ítem del carrito
+        item = get_object_or_404(ItemCarrito, id=item_id)
+
+        # Actualizar la cantidad
+        item.cantidad = nueva_cantidad
+        item.save()
+
+        # Calcular el nuevo total del carrito
+        total_carrito = sum(item.cantidad * item.producto.precio for item in item.carrito.items.all())
+
+        return JsonResponse({'total_carrito': f"{total_carrito:.2f}"})

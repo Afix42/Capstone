@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+{% include 'core/plantillas/dame_head.html' %}
+{% include 'core/plantillas/navbar.html' %}
+<body>
+    <br>
+    <!-- Carrito Container -->
+    <div class="container mt-5 pt-4">
+        <h2 class="text-center mb-4"><i class="fas fa-shopping-cart"></i> Carrito de Compras</h2>
+        <div class="row">
+            <!-- Lista de productos en el carrito -->
+            <div class="col-md-8">
+                <div class="cart-items bg-light p-3 rounded shadow">
+                    {% for item in carrito.items.all %}
+                    <div class="cart-item d-flex align-items-center mb-3">
+                        <img src="{{ item.producto.imagen_uno.url }}" alt="{{ item.producto.nombre_producto }}" class="img-thumbnail mr-3" style="width: 100px; height: 100px;">
+                        <div class="cart-item-details">
+                            <h5>{{ item.producto.nombre_producto }}</h5>
+                            <p class="text-muted">{{ item.producto.tipo_producto }}</p>
+                            <p class="text-success">${{ item.subtotal }}</p>
+                        </div>
+                        <div class="ml-auto">
+                            <input type="number" class="form-control mb-2" style="width: 80px;" value="{{ item.cantidad }}" min="1" data-item-id="{{ item.id }}">
+                            <a href="{% url 'eliminar_item' item.id %}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <!-- Añade más productos aquí -->
+                    <div class="text-center">
+                        <a href="{% url 'tienda' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar más productos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen del pedido -->
+            <div class="col-md-4">
+                <div class="order-summary bg-light p-3 rounded shadow">
+                    <h4 class="mb-3"><i class="fas fa-receipt"></i> Resumen del Pedido</h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total del Carrito:</span>
+                        <p><strong>Total:</strong> ${{ total_carrito }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between font-weight-bold">
+                        <span>Total:</span>
+                        <span>${{ carrito.total_carrito}}</span>
+                    </div>
+                    <hr>
+                    <button class="btn btn-success btn-block"><i class="fas fa-credit-card"></i> Finalizar Compra</button>
+                    <a href="{% url 'tienda' %}" class="btn btn-secondary btn-block"><i class="fas fa-arrow-left"></i> Seguir Comprando</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: rgb(0, 0, 0);
+            background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+            box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.9), 0 5px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .cart-items {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .cart-item img {
+            border-radius: 5px;
+        }
+
+        .cart-item-details h5 {
+            color: #333;
+        }
+
+        .cart-item-details p {
+            margin-bottom: 0;
+        }
+
+        .btn-danger {
+            font-size: 0.85rem;
+        }
+
+        .order-summary {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .order-summary h4 {
+            color: #333;
+        }
+
+        .btn-primary,
+        .btn-success {
+            font-size: 1rem;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        hr {
+            border-top: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-wrap: wrap;
+            }
+
+            .cart-item img {
+                margin-bottom: 10px;
+            }
+
+            .order-summary {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</body>
+
+<script>
+    document.querySelectorAll('.cantidad-producto').forEach(input => {
+        input.addEventListener('change', (event) => {
+            const itemId = event.target.dataset.itemId; // ID del producto
+            const nuevaCantidad = event.target.value;  // Nueva cantidad
+
+            // Enviar la solicitud al servidor para actualizar la cantidad
+            fetch("{% url 'actualizar_cantidad' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}", // Token CSRF para seguridad
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    cantidad: nuevaCantidad
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el total del carrito en el frontend
+                document.querySelector('#total-carrito').textContent = `$${data.total_carrito}`;
+            })
+            .catch(error => {
+                console.error('Error al actualizar el carrito:', error);
+            });
+        });
+    });
+</script>
+
+
+</html>

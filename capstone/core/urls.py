@@ -29,9 +29,12 @@ urlpatterns = [
     path('like_post/<int:post_id>/', views.like_post, name='like_post'),
     path('chat/', views.chat, name='chat'),
     path('chatbot_response/', views.chatbot_response, name='chatbot_response'),
-    
     path('ruta-ajax-compatibilidad/', views.obtener_compatibles, name='ruta-ajax-compatibilidad'),
     path('request-password-reset/', views.request_password_reset, name='request_password_reset'),
     path('reset-password/', views.reset_password, name='reset_password'),
+    path('carrito/', views.ver_carrito, name='ver_carrito'),
+    path('agregar_al_carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('carrito/eliminar/<int:item_id>/', views.eliminar_item, name='eliminar_item'),
+    path('carrito/actualizar/', views.actualizar_cantidad, name='actualizar_cantidad'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
