@@ -43,6 +43,10 @@ INSTALLED_APPS = [
 ]
 
 
+PAYPAL_CLIENT_ID = "AVh0QnZnXdWSeDGi0uuvHTb4We4igcgiNl37r6ubxzOmhsftDNvcBUw8qSm1plcK22zF6SxOBG19dvNO"
+PAYPAL_CLIENT_SECRET = "ELJOj98h4aO7IRaz6ndYxIj6BvxXbjLKy0Safqd2YQhAAFzBZHhAsm5w9ag5mlyWX6nFXf25YuPDPQ85"
+PAYPAL_MODE = "sandbox"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

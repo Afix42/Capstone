@@ -18,6 +18,10 @@ from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
 import ollama
 import json
+import paypalrestsdk
+from django.conf import settings
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
 #from decimal import Decimal, InvalidOperation
 #import openai
 #import subprocess
@@ -875,14 +879,18 @@ def agregar_al_carrito(request, producto_id):
 
 @login_required
 def ver_carrito(request):
-    carrito = get_object_or_404(Carrito, usuario=request.user)
-    
-    # Calcula el total sumando los subtotales de todos los productos en el carrito
-    total_carrito = carrito.total_carrito  # Usa la propiedad total_carrito
-    
-    print(f"Total del carrito: {total_carrito}")  # Imprime el total para verificar
-    
-    return render(request, 'core/carrito.html', {'carrito': carrito, 'total_carrito': total_carrito})
+    # Obtén el carrito del usuario o crea uno vacío si no existe
+    carrito, created = Carrito.objects.get_or_create(usuario=request.user)
+
+    # Calcula el total solo si el carrito tiene ítems
+    total_carrito = carrito.total_carrito if carrito.items.exists() else 0
+
+    # Renderiza la plantilla del carrito
+    return render(request, 'core/carrito.html', {
+        'carrito': carrito,
+        'total_carrito': total_carrito,
+    })
+
 
 @login_required
 def eliminar_item(request, item_id):
@@ -922,3 +930,78 @@ def actualizar_cantidad(request):
         total_carrito = sum(item.cantidad * item.producto.precio for item in item.carrito.items.all())
 
         return JsonResponse({'total_carrito': f"{total_carrito:.2f}"})
+
+
+
+
+
+
+@login_required
+def iniciar_pago(request):
+    paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,  # sandbox o live
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET,
+})
+    carrito = get_object_or_404(Carrito, usuario=request.user)
+    total_carrito = carrito.total_carrito
+
+    # Crear el pago
+    pago = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri('/pago/completado/'),
+            "cancel_url": request.build_absolute_uri('/pago/cancelado/')
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": f"Carrito de {request.user.username}",
+                    "sku": "carrito",
+                    "price": f"{total_carrito:.2f}",
+                    "currency": "USD",
+                    "quantity": 1,
+                }]
+            },
+            "amount": {
+                "total": f"{total_carrito:.2f}",
+                "currency": "USD"
+            },
+            "description": f"Pago de carrito para {request.user.username}"
+        }]
+    })
+
+    if pago.create():
+        # Redirige al usuario a la URL de aprobación de PayPal
+        for link in pago.links:
+            if link.rel == "approval_url":
+                return redirect(link.href)
+    else:
+        print(pago.error)  # Log de errores
+        return JsonResponse({"error": "Error al crear el pago."}, status=500)
+
+@login_required
+def completar_pago(request):
+    pago_id = request.GET.get('paymentId')
+    token = request.GET.get('token')
+    payer_id = request.GET.get('PayerID')
+
+    # Ejecutar el pago
+    pago = paypalrestsdk.Payment.find(pago_id)
+    if pago.execute({"payer_id": payer_id}):
+        messages.success(request, "¡Pago completado con éxito!")
+        # Vaciar el carrito
+        Carrito.objects.filter(usuario=request.user).delete()
+        return redirect('ver_carrito')
+    else:
+        print(pago.error)  # Log de errores
+        messages.error(request, "Hubo un problema al procesar el pago.")
+        return redirect('ver_carrito')
+
+@login_required
+def cancelar_pago(request):
+    messages.warning(request, "El pago fue cancelado.")
+    return redirect('ver_carrito')
