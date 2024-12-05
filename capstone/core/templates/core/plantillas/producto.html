@@ -33,8 +33,7 @@
                 <a href="#" class="product-link">Recógelo en la tienda</a>
 
                 <div class="product-price">
-                    <p class="last-price">Antes: <span>$ {{ precio_producto}}</span></p>
-                    <p class="new-price">Ahora:<span>${{ producto.precio_producto | intcomma }}</span></p>
+                    <p class="new-price">Precio:<span>${{ producto.precio_producto | intcomma }}</span></p>
                 </div>
 
                 <div class="product-detail">
@@ -42,19 +41,26 @@
                     <p>{{ producto.descripcion_producto }}</p>
                     <ul>
                         <li>Stock disponible: <span>{{ producto.stock_producto }}</span></li>
-                        <li>Marca: <span>{{ producto.nombre_producto }}</span></li>
+                        <li>Marca: <span>{{ producto.marca }}</span></li>
                     </ul>
                 </div>
 
                 <!-- Botones de acción -->
-                <div class="purchase-info">
+                <div class="purchase-info"> 
                     <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
-                    {% csrf_token %}
-                        <button type="submit" class="btn">Añadir al carrito <i class="fas fa-shopping-cart"></i></button>             
+                        {% csrf_token %}
+                        {% if user.is_authenticated %}
+                        <div class="product-quantity">
+                            <input type="number" class="form-control" value="1" min="1" id="product-quantity-{{ producto.id }}">
+                            <button class="btn btn-primary" id="add-to-cart-{{ producto.id }}">Agregar al carrito</button>
+                        </div>
+                        {% else %}
+                        <button type="button" class="btn"><a href="{% url 'login' %}">Inicia sesión para añadir al carrito</a></button>
+                        {% endif %}
                     </form>
                     <button type="button" class="btn"><a href="{% url 'tienda' %}">Volver a la tienda</a></button>
                 </div>
-
+                
                 <!-- Redes sociales -->
                 <div class="social-links">
                     <p>¡Compártelo!</p>
