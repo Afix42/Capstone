@@ -19,7 +19,7 @@
             <!-- Botón de comentarios -->
             <div class="btn comments-container">
                 <i class="fas fa-comment"></i>
-                <span class="comment-count">20</span>
+                <span class="comment-count">{{ post.comentarios.count }}</span>
             </div>
 
             {% if user.is_staff %}

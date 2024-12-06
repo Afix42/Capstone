@@ -195,6 +195,61 @@
                 });
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButtons = document.querySelectorAll('[id^="add-to-cart-"]');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.id.split('-')[2];  // Obtener el ID del producto
+            const quantityInput = document.getElementById(`product-quantity-${productId}`);
+            const quantity = quantityInput.value;
+
+            // Enviar la solicitud AJAX para agregar el producto al carrito
+            fetch(`/agregar_al_carrito/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mostrar mensaje de éxito y actualizar el carrito si es necesario
+                    alert(data.message);
+                    // Actualizar la cantidad y el subtotal en el frontend
+                    updateCartDisplay(data.cantidad, data.subtotal);
+                } else {
+                    // Mostrar mensaje de error
+                    alert(data.message);
+                }
+            });
+        });
+    });
+
+    // Función para obtener el token CSRF
+    function getCSRFToken() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        return csrfToken;
+    }
+
+    // Función para actualizar la visualización del carrito en la interfaz de usuario
+    function updateCartDisplay(cantidad, subtotal) {
+        // Actualiza la cantidad y el subtotal del item en el carrito
+        const cartItem = document.getElementById(`cart-item-${productId}`);
+        const quantityDisplay = cartItem.querySelector('.cart-item-quantity');
+        const subtotalDisplay = cartItem.querySelector('.cart-item-subtotal');
+        
+        if (quantityDisplay && subtotalDisplay) {
+            quantityDisplay.textContent = cantidad;
+            subtotalDisplay.textContent = '$' + subtotal;
+        }
+    }
+});
+
 </script>
 
 

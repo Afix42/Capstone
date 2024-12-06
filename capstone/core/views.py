@@ -622,8 +622,20 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comentarios = post.comentarios.all()
 
+    comentario_a_editar = None  # Variable para almacenar el comentario que se está editando
+    if 'editar_comentario_id' in request.GET:  # Detecta si se va a editar un comentario
+        comentario_a_editar = get_object_or_404(Comentario, id=request.GET['editar_comentario_id'], autor=request.user)
+        form = ComentarioForm(instance=comentario_a_editar)
+    else:
+        form = ComentarioForm()
+
     if request.method == 'POST':
-        form = ComentarioForm(request.POST)
+        if 'editar_comentario_id' in request.POST:  # Detecta si el POST es para editar
+            comentario_a_editar = get_object_or_404(Comentario, id=request.POST['editar_comentario_id'], autor=request.user)
+            form = ComentarioForm(request.POST, instance=comentario_a_editar)
+        else:
+            form = ComentarioForm(request.POST)
+
         if form.is_valid():
             comentario = form.save(commit=False)
             if contains_bad_words(comentario.contenido):  # Cambia `contenido` al campo del comentario
@@ -633,13 +645,13 @@ def post_detail(request, post_id):
                 comentario.autor = request.user
                 comentario.save()
                 return redirect('post_detail', post_id=post.id)
-    else:
-        form = ComentarioForm()
+
 
     context = {
         'post': post,
         'comentarios': comentarios,
         'form': form,
+        'comentario_a_editar': comentario_a_editar,  # Pasamos el comentario en edición
     }
     return render(request, 'core/post.html', context)
 
@@ -804,31 +816,42 @@ def chatbot_response(request):
         try:
             # Cargar los datos JSON del cuerpo de la solicitud
             data = json.loads(request.body.decode('utf-8'))
-            user_message = data.get('message', '').strip()  # Asegúrate de manejar posibles espacios
-
+            user_message = data.get('message', '').strip()  # Manejar espacios
+            
             if not user_message:
                 return JsonResponse({'message': 'Por favor ingresa un mensaje válido.'}, status=400)
-
-            # Mensaje de sistema para limitar el contexto y la longitud
-            system_message = (
-                "Eres un asistente especializado en componentes de PC. Responde únicamente a preguntas "
-                "relacionadas con PCs, componentes, compatibilidad y armado. Mantén tus respuestas claras, "
-                "concisas y breves, usando un máximo de dos o tres oraciones."
-            )
-
-            # Llamada a Ollama con instrucciones específicas
+            
+            # Inicializar historial de conversación en la sesión si no existe
+            if 'chat_history' not in request.session:
+                request.session['chat_history'] = [
+                    {'role': 'system', 'content': (
+                        "Eres un asistente especializado en componentes de PC. Responde únicamente a preguntas "
+                        "relacionadas con PCs, componentes, compatibilidad y armado. Mantén tus respuestas claras, "
+                        "concisas y breves, usando un máximo de dos o tres oraciones."
+                    )}
+                ]
+            
+            # Agregar mensaje del usuario al historial
+            request.session['chat_history'].append({'role': 'user', 'content': user_message})
+            
+            # Limitar historial a las últimas 10 interacciones (puedes ajustar el número)
+            if len(request.session['chat_history']) > 10:
+                request.session['chat_history'] = request.session['chat_history'][-10:]
+            
+            # Llamar a Ollama con el historial completo
             response = ollama.chat(
                 model='llama3.2',
-                messages=[
-                    {'role': 'system', 'content': system_message},
-                    {'role': 'user', 'content': user_message}
-                ],
+                messages=request.session['chat_history'],
                 options={'max_tokens': 100}  # Limita los tokens generados en la respuesta
             )
-
-            # Procesar la respuesta
+            
+            # Procesar la respuesta del chatbot
             bot_message = response.get('message', {}).get('content', 'No se obtuvo respuesta.')
-
+            
+            # Agregar respuesta del bot al historial
+            request.session['chat_history'].append({'role': 'assistant', 'content': bot_message})
+            request.session.modified = True  # Asegurarse de que los cambios en la sesión se guarden
+            
             return JsonResponse({'message': bot_message}, status=200)
 
         except json.JSONDecodeError as e:
@@ -837,6 +860,7 @@ def chatbot_response(request):
             return JsonResponse({'message': 'Error interno al procesar la solicitud.', 'error': str(e)}, status=500)
     else:
         return JsonResponse({'message': 'Método no permitido.'}, status=405)
+
 
 
 @login_required

@@ -26,24 +26,24 @@
 
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1;
+            z-index: -2;
         }
 
         body::after {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             backdrop-filter: blur(5px);
-            z-index: 2;
+            z-index: -1;
         }
 
         .container {
@@ -189,6 +189,11 @@
             <div class="comment" id="comment-{{ comentario.id }}">
                 <p class="comment-author">{{ comentario.autor.username }}</p>
                 <p class="comment-text">{{ comentario.contenido }}</p>
+                
+                {% if comentario.autor == user %}
+                    <!-- Botón para editar el comentario -->
+                    <a href="?editar_comentario_id={{ comentario.id }}" class="btn btn-sm btn-link">Editar</a>
+                {% endif %}
             </div>
         {% empty %}
             <p>No hay comentarios aún. Sé el primero en comentar.</p>
@@ -198,25 +203,38 @@
             <div class="alert alert-danger">{{ error_message }}</div>
         {% endif %}
     
-    {% if user.is_authenticated %}
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <textarea name="contenido" class="form-control" rows="3" placeholder="Escribe tu comentario aquí..."></textarea>
-                {% if form.errors %}
-                    <div class="alert alert-danger">
-                        {{ form.errors }}
-                    </div>
+        {% if user.is_authenticated %}
+            <h3>{% if comentario_a_editar %}Editar Comentario{% else %}Añadir Comentario{% endif %}</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <!-- Mostrar contenido del comentario si está en edición -->
+                    <textarea name="contenido" class="form-control" rows="3" placeholder="Escribe tu comentario aquí...">
+                        {% if comentario_a_editar %}{{ comentario_a_editar.contenido }}{% endif %}
+                    </textarea>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- Input oculto para enviar el ID del comentario si está en edición -->
+                {% if comentario_a_editar %}
+                    <input type="hidden" name="editar_comentario_id" value="{{ comentario_a_editar.id }}">
                 {% endif %}
+                <button type="submit" class="btn btn-primary">
+                    {% if comentario_a_editar %}Actualizar{% else %}Enviar Comentario{% endif %}
+                </button>
+            </form>
+        {% else %}
+            <div class="alert alert-info">
+                <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para escribir un comentario.</p>
             </div>
-            <button type="submit" class="btn btn-primary">Enviar Comentario</button>
-        </form>
-    {% else %}
-        <div class="alert alert-info">
-            <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para escribir un comentario.</p>
-        </div>
-    {% endif %}
-        
+        {% endif %}
+    </div>
+    
+
+    
         <!-- Paginación en la parte inferior del contenedor -->
         <div class="pagination">
             <a href="#" class="active">1</a>
