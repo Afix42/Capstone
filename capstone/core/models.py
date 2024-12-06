@@ -82,6 +82,7 @@ class Post(models.Model):
     contenido = models.TextField()
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    activo = models.BooleanField(default=True)  # Campo para borrado suave
     
     # Aquí agregamos el campo ManyToManyField para los likes y le damos un nombre único con `related_name`
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_posts', blank=True)

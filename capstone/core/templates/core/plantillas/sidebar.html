@@ -2,13 +2,22 @@
 <!-- Ventana para posts destacados -->
 <div class="sidebar">
     <h2 class="sidebar-title"><i class="fa-solid fa-flag"></i> Destacados</h2>
-    <div class="highlighted-post">
-        <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
-        <div>
-            <h3>Post destacado 1</h3>
-            <p>Contenido destacado aquí...</p>
+    {% if post_destacado %}
+        <div class="highlighted-post">
+            <!-- Imagen del post destacado -->
+            <img src="{% static 'IMG/placeholder.jpg' %}" alt="Imagen destacada" class="img-fluid">
+            
+            <!-- Contenido del post -->
+            <div>
+                <h3>{{ post_destacado.titulo }}</h3>
+                <p>{{ post_destacado.contenido|truncatechars:100 }}</p>
+                <p><strong>Likes:</strong> {{ post_destacado.likes.count }}</p>
+                <a href="{% url 'post_detail' post_destacado.id %}" class="btn btn-primary">Leer más</a>
+            </div>
         </div>
-    </div>
+    {% else %}
+        <p>No hay posts destacados aún.</p>
+    {% endif %}
     <!-- Sección de cuenta de usuario -->
     <div class="user-account">
         <h3><i class="fa-solid fa-user"></i> PC Forge</h3>

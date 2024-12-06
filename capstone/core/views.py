@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth import authenticate, login as django_login
 from .models import Usuario, Rol, Producto, TipoProducto, Post, Comentario, Like, Carrito, ItemCarrito
 from django.contrib.auth.models import User
@@ -533,10 +533,25 @@ def comparar_productos(prod1, prod2):
 
 
 # Vista para la lista de posts, ahora renombrada a 'foro'
+from django.db.models import Count
+
 def foro(request):
-    # Ordenar por el campo correcto que es 'fecha_publicacion'
-    posts = Post.objects.all().order_by('-fecha_publicacion')
-    return render(request, 'core/foro.html', {'posts': posts})
+    # Obtener los posts ordenados por fecha de publicación con activo=True
+    posts = Post.objects.filter(activo=True).order_by('-fecha_publicacion')
+
+    # Calcular el post destacado con mayor número de likes y activo=True
+    post_destacado = (
+        Post.objects.filter(activo=True)
+        .annotate(like_count=Count('likes'))
+        .order_by('-like_count')
+        .first()
+    )
+
+    return render(request, 'core/foro.html', {
+        'posts': posts,
+        'post_destacado': post_destacado,  # Pasar el post destacado al contexto
+    })
+
 
 logger = logging.getLogger(__name__)
 
@@ -1005,3 +1020,25 @@ def completar_pago(request):
 def cancelar_pago(request):
     messages.warning(request, "El pago fue cancelado.")
     return redirect('ver_carrito')
+
+
+
+@login_required
+def eliminar_publicacion(request, post_id):
+    post = get_object_or_404(Post, id=post_id, activo=True)
+    if request.user.is_staff:  # Solo los administradores pueden eliminar
+        post.activo = False
+        post.save()
+        return redirect('foro')  # Redirige al feed o donde consideres
+    else:
+        return HttpResponseForbidden("No tienes permiso para eliminar esta publicación.")
+    
+from django.db.models import Count
+
+def destacados_view(request):
+    post_destacado = Post.objects.annotate(like_count=Count('likes')).order_by('-like_count').first()
+
+    context = {
+        'post_destacado': post_destacado,
+    }
+    return render(request, 'destacados.html', context)

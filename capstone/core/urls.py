@@ -39,5 +39,6 @@ urlpatterns = [
     path('pago/iniciar/', views.iniciar_pago, name='iniciar_pago'),
     path('pago/completado/', views.completar_pago, name='completar_pago'),
     path('pago/cancelado/', views.cancelar_pago, name='cancelar_pago'),
+    path('eliminar_publicacion/<int:post_id>/', views.eliminar_publicacion, name='eliminar_publicacion'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

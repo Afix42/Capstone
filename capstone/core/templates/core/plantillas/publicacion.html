@@ -1,6 +1,6 @@
 {% load static %}
 
-<a href="{% url 'post_detail' post.id %}" class="post">
+<div class="post" onclick="redirectToPost(event, '{{ post.id }}')">
     <div class="post-content">
         <h2 class="post-title">{{ post.titulo }}</h2>
         <div class="post-description">
@@ -8,37 +8,37 @@
             <p>{{ post.contenido }}</p>
         </div>
 
-        <!-- Nuevo pie de post con botones invertidos -->
+        <!-- Nuevo pie de post con botones -->
         <div class="post-footer">
-            <!-- Botón de votos con hover especial para like/dislike -->
             <div class="btn votes-container">
-                <div class="vote-up" onclick="toggleLike(event, `{{ post.id }}`)">
+                <div class="vote-up" onclick="toggleLike(event, '{{ post.id }}')">
                     <i class="fa-solid fa-up-long"></i>
                 </div>
                 <span class="vote-count" id="like-count-{{ post.id }}">{{ post.likes.count }}</span>
             </div>
-
             <!-- Botón de comentarios -->
             <div class="btn comments-container">
                 <i class="fas fa-comment"></i>
                 <span class="comment-count">20</span>
             </div>
 
-            <!-- Botón de compartir -->
-            <div class="btn share-container">
-                <i class="fa-solid fa-share"></i>
-                <span>Compartir</span>
+            {% if user.is_staff %}
+            <div class="btn delete-container">
+                <a href="{% url 'eliminar_publicacion' post.id %}" onclick="stopPropagation(event)" id="btnBorrar">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Eliminar publicación</span>
+                </a>
             </div>
+            {% endif %}
         </div>
     </div>
 
     <img class="post-img" src="{% static 'IMG/placeholder.jpg' %}" alt="Placeholder">
-</a>
-
+</div>
 <script>
     function toggleLike(event, postId) {
         event.preventDefault();  // Evita que el botón recargue la página
-        
+
         console.log('Enviando solicitud POST a:', `/like_post/${postId}/`);  // Depuración
 
         fetch(`/like_post/${postId}/`, {
@@ -48,210 +48,248 @@
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                console.error('Error en la respuesta del servidor:', response.statusText);
-                return null;
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Respuesta del servidor:", data); // Mostrar la respuesta del servidor para depuración
-        
-            if (data && data.like_count !== undefined) {
-                const likeCount = document.getElementById(`like-count-${postId}`);
-                likeCount.textContent = data.like_count;
-            } else {
-                console.error('Error en la respuesta del servidor:', data);
-            }
-        })
-        .catch(error => console.error('Error en la solicitud:', error));
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error en la respuesta del servidor:', response.statusText);
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Respuesta del servidor:", data); // Mostrar la respuesta del servidor para depuración
+
+                if (data && data.like_count !== undefined) {
+                    const likeCount = document.getElementById(`like-count-${postId}`);
+                    likeCount.textContent = data.like_count;
+                } else {
+                    console.error('Error en la respuesta del servidor:', data);
+                }
+            })
+            .catch(error => console.error('Error en la solicitud:', error));
     }
 
+    function redirectToPost(event, postId) {
+    // Verifica si el clic ocurrió dentro de un botón
+    if (event.target.closest('.btn')) {
+        event.stopPropagation();
+        return; // No redirige
+    }
+    // Redirige al detalle del post
+    window.location.href = `/post/${postId}`;
+}
+
+function stopPropagation(event) {
+    event.stopPropagation(); // Detiene la propagación del clic
+}
 </script>
 
+
 <style>
-/* Estilo general de los botones */
-.btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    background-color: #fff; /* Fondo blanco */
-    border-radius: 10px;
-    margin: 1vh;
-    height: 40px;
-    font-weight: bold;
-    font-family: 'Roboto', sans-serif;
-    color: #333; /* Texto gris oscuro */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Efecto hover: invierte los colores al pasar el cursor */
-.btn:hover {
-    background-color: #333; /* Fondo gris oscuro */
-    color: #fff; /* Texto blanco */
-}
-
-/* Estilo especial para el botón de votos */
-.votes-container {
-    display: flex;
-    gap: 10px; /* Espacio entre los íconos y el conteo de votos */
-}
-
-/* Flecha hacia arriba */
-.vote-up, .vote-down {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background-color: #fff;
-    transition: background 0.3s ease;
-}
-
-/* Hover en la flecha hacia arriba: mitad naranjo cálido */
-.vote-up:hover {
-    background: linear-gradient(90deg, #FF7D50 100%, #fff 50%);
-}
-
-/* Hover en la flecha hacia abajo: mitad morado */
-.vote-down:hover {
-    background: linear-gradient(270deg, #C050FF 100%, #fff 50%);
-}
-
-/* Ajustes para los íconos */
-.votes-container i {
-    font-size: 1.2rem;
-    color: #333;
-}
-
-/* Contadores de votos y comentarios */
-.vote-count, .comment-count {
-    margin: 0 10px;
-    font-size: 1rem;
-}
-
-/* Botón de compartir */
-.share-container span {
-    margin-left: 5px;
-}
-
-/* Estilo de cada post */
-.post {
-    margin: 0 10px 5px 10px; /* Combina márgenes */
-    background-color: #fafafa;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 70%; /* Ancho por defecto */
-    position: relative;
-    min-height: 350px; /* Asegura un mínimo de altura para prevenir solapamientos */
-}
-
-/* Hover para cada post */
-.post:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    background-color: rgba(211, 211, 211, 0.5);
-}
-
-/* Estilos para el contenedor de contenido */
-.post-content {
-    flex: 1;
-    margin-right: 20px;
-    padding-bottom: 40px;
-}
-
-/* Imagen del post */
-.post-img {
-    width: 300px;
-    border-radius: 10px;
-    object-fit: cover;
-    position: relative;
-}
-
-/* Estilos para el título y descripción */
-.post-title {
-    font-size: 1.75rem;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.post-description {
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    color: #666;
-    font-style: italic;
-    line-height: 1.2;
-}
-
-/* Estilos para el pie del post */
-.post-footer {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: flex-start; /* Alinear a la izquierda */
-}
-
-/* Ajustes responsivos */
-@media screen and (max-width: 1200px) {
-    .post {
-        flex-direction: column; /* Coloca la imagen debajo del contenido */
-        height: auto; /* Elimina la altura fija */
-        width: 100%; /* Cambia el ancho al 100% */
-    }
-
-    .post-img {
-        width: 100%;
-        max-height: 200px;
-        margin-bottom: 10px;
-    }
-
-    .post-content {
-        margin-right: 0;
-        margin-bottom: 20px; /* Agrega espacio adicional debajo del contenido */
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .post {
-        padding: 10px;
-        width: 100%; /* Cambia el ancho al 100% en pantallas más pequeñas */
-    }
-
-    .post-title {
-        font-size: 1.5rem;
-    }
-
+    /* Estilo general de los botones */
     .btn {
-        height: 35px;
-        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        background-color: #fff;
+        /* Fondo blanco */
+        border-radius: 10px;
+        margin: 1vh;
+        height: 40px;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        /* Texto gris oscuro */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        /* Sombra para darle profundidad */
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        z-index: 10;
     }
-}
 
-@media screen and (max-width: 480px) {
-    .post {
-        width: 100%; /* Cambia el ancho al 100% en pantallas pequeñas */
+    /* Efecto hover: invierte los colores al pasar el cursor */
+    .btn:hover {
+        background-color: #333;
+        /* Fondo gris oscuro */
+        color: #fff;
+        /* Texto blanco */
     }
 
-    .post-title {
+    /* Estilo especial para el botón de votos */
+    .votes-container {
+        display: flex;
+        gap: 10px;
+        /* Espacio entre los íconos y el conteo de votos */
+    }
+
+    /* Flecha hacia arriba */
+    .vote-up,
+    .vote-down {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background-color: #fff;
+        transition: background 0.3s ease;
+    }
+
+    /* Hover en la flecha hacia arriba: mitad naranjo cálido */
+    .vote-up:hover {
+        background: linear-gradient(90deg, #FF7D50 100%, #fff 50%);
+    }
+
+    /* Hover en la flecha hacia abajo: mitad morado */
+    .vote-down:hover {
+        background: linear-gradient(270deg, #C050FF 100%, #fff 50%);
+    }
+
+    /* Ajustes para los íconos */
+    .votes-container i {
         font-size: 1.2rem;
+        color: #333;
     }
 
+    /* Contadores de votos y comentarios */
+    .vote-count,
+    .comment-count {
+        margin: 0 10px;
+        font-size: 1rem;
+    }
+
+    /* Botón de compartir */
+    .share-container span {
+        margin-left: 5px;
+    }
+
+    /* Estilo de cada post */
+    .post {
+        margin: 0 10px 5px 10px;
+        /* Combina márgenes */
+        background-color: #fafafa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 70%;
+        /* Ancho por defecto */
+        position: relative;
+        min-height: 350px;
+        /* Asegura un mínimo de altura para prevenir solapamientos */
+        z-index: 1;
+    }
+
+    /* Hover para cada post */
+    .post:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        background-color: rgba(211, 211, 211, 0.5);
+    }
+
+    /* Estilos para el contenedor de contenido */
+    .post-content {
+        flex: 1;
+        margin-right: 20px;
+        padding-bottom: 40px;
+    }
+
+    /* Imagen del post */
     .post-img {
-        max-height: 150px;
+        width: 300px;
+        border-radius: 10px;
+        object-fit: cover;
+        position: relative;
     }
 
-    .btn {
-        height: 30px;
-        font-size: 0.8rem;
+    /* Estilos para el título y descripción */
+    .post-title {
+        font-size: 1.75rem;
+        margin-bottom: 10px;
+        color: #333;
     }
+
+    .post-description {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        color: #666;
+        font-style: italic;
+        line-height: 1.2;
+    }
+
+    /* Estilos para el pie del post */
+    .post-footer {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: flex-start;
+        /* Alinear a la izquierda */
+    }
+
+    /* Ajustes responsivos */
+    @media screen and (max-width: 1200px) {
+        .post {
+            flex-direction: column;
+            /* Coloca la imagen debajo del contenido */
+            height: auto;
+            /* Elimina la altura fija */
+            width: 100%;
+            /* Cambia el ancho al 100% */
+        }
+
+        .post-img {
+            width: 100%;
+            max-height: 200px;
+            margin-bottom: 10px;
+        }
+
+        .post-content {
+            margin-right: 0;
+            margin-bottom: 20px;
+            /* Agrega espacio adicional debajo del contenido */
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .post {
+            padding: 10px;
+            width: 100%;
+            /* Cambia el ancho al 100% en pantallas más pequeñas */
+        }
+
+        .post-title {
+            font-size: 1.5rem;
+        }
+
+        .btn {
+            height: 35px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .post {
+            width: 100%;
+            /* Cambia el ancho al 100% en pantallas pequeñas */
+
+        }
+
+        .post-title {
+            font-size: 1.2rem;
+        }
+
+        .post-img {
+            max-height: 150px;
+        }
+
+        .btn {
+            height: 30px;
+            font-size: 0.8rem;
+        }
+    }
+#btnBorrar{
+    color: red;
 }
 </style>
