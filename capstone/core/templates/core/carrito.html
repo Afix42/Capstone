@@ -21,6 +21,14 @@
     <!-- Carrito Container -->
 
         <div class="container mt-5 pt-4">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-dismissible alert-success fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>
+                    <strong class="text-dark">{{ message }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
             <h2 class="text-center mb-4"><i class="fas fa-shopping-cart"></i> Carrito de Compras</h2>
             <div class="row">
                 <!-- Lista de productos en el carrito -->
