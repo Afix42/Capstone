@@ -54,10 +54,10 @@
                             <button type="submit" class="btn">Añadir al carrito <i class="fas fa-shopping-cart"></i></button>        
                         </div>
                         {% else %}
-                        <button type="button" class="btn"><a href="{% url 'login' %}">Inicia sesión para añadir al carrito</a></button>
+                        <a href="{% url 'login' %}" class="btn">Inicia sesión para añadir al carrito</a>
                         {% endif %}
                     </form>
-                    <button type="button" class="btn"><a href="{% url 'tienda' %}">Volver a la tienda</a></button>
+                    <a href="{% url 'tienda' %}" class="btn">Volver a la tienda</a>
                 </div>
                 
                 <!-- Redes sociales -->

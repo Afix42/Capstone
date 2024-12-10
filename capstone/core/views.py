@@ -22,6 +22,7 @@ import paypalrestsdk
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth.decorators import permission_required
 #from decimal import Decimal, InvalidOperation
 #import openai
 #import subprocess
@@ -117,7 +118,7 @@ def change_password(request):
 
         # Verificar que la contraseña actual es correcta
         if not request.user.check_password(current_password):
-            messages.error(request, 'La contraseña actual es incorrecta.')
+            messages.error(request, 'La contraseña o el correo electronico actual es incorrecta.')
             return redirect('change_password')
 
         # Verificar que las nuevas contraseñas coincidan
@@ -321,15 +322,15 @@ def detalle_producto(request, producto_id):
 
     # Preparar las imágenes del producto
     imagenes = [
-        producto.imagen_uno.url if producto.imagen_uno else '/static/img/placeholder.jpg',
-        producto.imagen_dos.url if producto.imagen_dos else '/static/img/placeholder.jpg',
-        producto.imagen_tres.url if producto.imagen_tres else '/static/img/placeholder.jpg',
-        producto.imagen_cuatro.url if producto.imagen_cuatro else '/static/img/placeholder.jpg',
+        producto.imagen_uno.url if producto.imagen_uno else '/static/img/default.jpg',
+        producto.imagen_dos.url if producto.imagen_dos else '/static/img/default.jpg',
+        producto.imagen_tres.url if producto.imagen_tres else '/static/img/default.jpg',
+        producto.imagen_cuatro.url if producto.imagen_cuatro else '/static/img/default.jpg',
     ]
 
     return render(request, 'core/plantillas/producto.html', {'producto': producto, 'imagenes': imagenes})
 
-
+@login_required
 def compara(request):
     # Obtener todos los tipos de productos
     tipos = TipoProducto.objects.all()  
@@ -356,7 +357,7 @@ def compara(request):
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-
+@login_required
 def obtener_compatibles(request):    
     id_producto1 = request.GET.get('producto1')
     tipo_producto2_id = request.GET.get('tipo_producto2')  # Nuevo parámetro de tipo
@@ -404,7 +405,6 @@ def obtener_compatibles(request):
         ]
 
     return JsonResponse({'compatibles': compatibles_data, 'tiposCompatibles': tipos_compatibles_data, 'mensaje': mensaje})
-
 
 
 
@@ -557,6 +557,7 @@ logger = logging.getLogger(__name__)
 
 # Vista para el detalle de un post, ahora renombrada a 'post'
 
+
 def post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comentarios = post.comentarios.all()  # Obtener comentarios relacionados con el post
@@ -680,6 +681,9 @@ from decimal import Decimal
 
 from decimal import Decimal, InvalidOperation
 
+
+@login_required
+@permission_required('core.add_producto', login_url='/login/')
 def form_edit_prod(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     tipo_producto = TipoProducto.objects.all()
@@ -748,8 +752,8 @@ def form_edit_prod(request, producto_id):
     return render(request, 'core/form_editar_productos.html', {'producto': producto, 'tipo_producto': tipo_producto})
 
 
-
-
+@login_required
+@permission_required('core.add_producto', login_url='/login/')
 def formAgregarProd(request):
     tipo_producto = TipoProducto.objects.all()
     if request.method == "POST":
@@ -799,6 +803,8 @@ def formAgregarProd(request):
     return render(request, 'core/form_agregar_productos.html', {'tipo_producto': tipo_producto})
 
 
+@login_required
+@permission_required('core.add_producto', login_url='/login/')
 def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.activo = False  # Cambiar el estado a inactivo
@@ -807,6 +813,7 @@ def eliminar_producto(request, producto_id):
     return redirect('tienda')  # Redirigir a la lista de productos
 
 
+@login_required
 def chat(request):
     return render(request, 'core/chat.html')  # Página de la tienda
 
@@ -863,7 +870,7 @@ def chatbot_response(request):
 
 
 
-@login_required
+@login_required 
 def agregar_al_carrito(request, producto_id):
     try:
         # Busca el producto por ID o retorna un 404
@@ -1048,14 +1055,12 @@ def cancelar_pago(request):
 
 
 @login_required
+@permission_required('core.add_producto', login_url='/login/')
 def eliminar_publicacion(request, post_id):
     post = get_object_or_404(Post, id=post_id, activo=True)
-    if request.user.is_staff:  # Solo los administradores pueden eliminar
-        post.activo = False
-        post.save()
-        return redirect('foro')  # Redirige al feed o donde consideres
-    else:
-        return HttpResponseForbidden("No tienes permiso para eliminar esta publicación.")
+    post.activo = False
+    post.save()
+    return redirect('foro')  # Redirige al feed o donde consideres
     
 from django.db.models import Count
 

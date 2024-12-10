@@ -22,7 +22,7 @@
                 <span class="comment-count">{{ post.comentarios.count }}</span>
             </div>
 
-            {% if user.is_staff %}
+            {% if perms.core.add_producto %}
             <div class="btn delete-container">
                 <a href="{% url 'eliminar_publicacion' post.id %}" onclick="stopPropagation(event)" id="btnBorrar">
                     <i class="fa-solid fa-trash"></i>

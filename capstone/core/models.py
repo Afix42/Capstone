@@ -34,6 +34,8 @@ class Usuario(AbstractUser):
     def generar_codigo_recuperacion(self):
         self.codigo_recuperacion = get_random_string(length=6, allowed_chars='0123456789')
         self.save()
+
+
 class TipoProducto(models.Model):
     nombre_tipo = models.CharField(max_length=25, verbose_name='Nombre del tipo de producto')
     
@@ -46,10 +48,10 @@ class Producto(models.Model):
     precio_producto = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Precio del producto', default=0)
     stock_producto = models.IntegerField(verbose_name='Stock del producto', default=0)
     imagen_uno = models.ImageField(upload_to="productos/", verbose_name='Primera imagen')
-    imagen_dos = models.ImageField(upload_to="productos/", verbose_name='Segunda imagen', null=True, blank=True)
-    imagen_tres = models.ImageField(upload_to="productos/", verbose_name='Tercera imagen', null=True, blank=True)
-    imagen_cuatro = models.ImageField(upload_to="productos/", verbose_name='Cuarta imagen', null=True, blank=True)
-    tipo_producto = models.ForeignKey(TipoProducto, on_delete=models.PROTECT, verbose_name='Tipo de producto', null=True)
+    imagen_dos = models.ImageField(upload_to="productos/", verbose_name='Segunda imagen', null=True, blank=True, default='productos/default.jpg')
+    imagen_tres = models.ImageField(upload_to="productos/", verbose_name='Tercera imagen', null=True, blank=True,default='productos/default.jpg')
+    imagen_cuatro = models.ImageField(upload_to="productos/", verbose_name='Cuarta imagen', null=True, blank=True,default='productos/default.jpg')
+    tipo_producto = models.ForeignKey(TipoProducto, on_delete=models.PROTECT, verbose_name='Tipo de producto', null=True,default='productos/default.jpg')
     activo = models.BooleanField(default=True)  # Campo para borrado suave
     # Campos generales para productos tecnológicos
     marca = models.CharField(max_length=50, verbose_name='Marca del producto', null=True, blank=True)

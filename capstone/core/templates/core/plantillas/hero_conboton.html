@@ -5,7 +5,7 @@
       <h3>¡Descubre nuestra poderosa inteligencia artificial!</h3>
       <h3>Permítele prestarte asistencia en construir tu computadora</h3>
     </div>
-    <button id="myButton" class="myButton" onclick="replaceButton()">Comenzar</button>
+    <button id="myButton" class="myButton" data-url="{% url 'chat' %}" onclick="replaceButton()">Comenzar</button>
   </div>
 </section>
 
@@ -77,3 +77,11 @@
     z-index: 0;
 }
 </style>
+
+<script>
+    function replaceButton() {
+        const button = document.getElementById('myButton');
+        const url = button.getAttribute('data-url');
+        window.location.href = url;
+    }
+</script>
