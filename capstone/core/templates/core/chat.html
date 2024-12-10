@@ -69,6 +69,8 @@
                                         loop 
                                         autoplay>
                         </dotlottie-player>
+
+
                         <div class="banner-icon">
                             <i class="fa-solid fa-hammer"></i>
                         </div>
@@ -91,8 +93,12 @@
         body {
             width: 100%;
             height: 91vh;
+            text-align: center;
             color: white;
             background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), url("https://images3.alphacoders.com/132/1329171.png") center/cover fixed;
+            box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.9), 0 5px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            background-color: #f8f9fa;
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
@@ -148,6 +154,55 @@
 
         .social-links a:hover {
             color: #333;
+        }
+
+
+        .sidebar-banner {
+            margin-top: 3vh;
+            padding: 10px;
+            background-color: #e1e1e1;
+            border-radius: 10px;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.5)), 
+                        url("https://images3.alphacoders.com/132/1329171.png") center/cover;
+            position: relative;
+        }
+
+        .banner-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: white;
+        }
+
+        .social-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .social-links a:hover {
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                margin: 20px 0;
+            }
+
+            .highlighted-post {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .highlighted-post img {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
     </style>
 
